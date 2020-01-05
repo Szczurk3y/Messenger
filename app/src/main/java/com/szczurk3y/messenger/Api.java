@@ -10,5 +10,8 @@ import retrofit2.http.POST;
 public interface Api {
     @Headers("Content-Type: application/json")
     @POST("register")
-    Call<ResponseBody> register(@Body User user);
+    Call<ResponseBody> register(@Body RegisterUser user);
+
+    @POST("login")
+    Call<ResponseBody> login(@Body LoginUser user);
 }
