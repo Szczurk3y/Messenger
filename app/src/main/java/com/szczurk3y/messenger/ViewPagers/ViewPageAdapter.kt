@@ -1,8 +1,10 @@
-package com.szczurk3y.messenger
+package com.szczurk3y.messenger.ViewPagers
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.szczurk3y.messenger.Fragments.LoginFragment
+import com.szczurk3y.messenger.Fragments.RegisterFragment
 
 class ViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
     override fun getItem(position: Int): Fragment {

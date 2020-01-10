@@ -1,4 +1,4 @@
-package com.szczurk3y.messenger
+package com.szczurk3y.messenger.Fragments
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -11,6 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.szczurk3y.messenger.R
+import com.szczurk3y.messenger.RegisterUser
+import com.szczurk3y.messenger.RetrofitClient
 import kotlinx.android.synthetic.main.fragment_register.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -21,45 +24,50 @@ import java.io.IOException
 class RegisterFragment : Fragment() {
     lateinit var user: RegisterUser
     lateinit var registerView: View
+    lateinit var username: EditText
+    lateinit var email: EditText
+    lateinit var password: EditText
+    lateinit var switch: Switch
+    lateinit var switchTextView: TextView
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_register, container, false)
-        val submit: Button = view!!.findViewById(R.id.registerButton)
-        val switch: Switch = view.findViewById(R.id.registerSwitch)
-        val switchText: TextView = view.findViewById(R.id.terms)
+        registerView = inflater.inflate(R.layout.fragment_register, container, false)
 
-        var checked: Boolean = false
+        switch = registerView.findViewById(R.id.registerSwitch)
+        username = registerView.findViewById(R.id.registerUsername)
+        email = registerView.findViewById(R.id.registerEmail)
+        password = registerView.findViewById(R.id.registerPassword)
+        switch = registerView.findViewById(R.id.registerSwitch)
+        switchTextView = registerView.findViewById(R.id.terms)
+        switchTextView.text = getString(R.string.switch_off)
 
-        switchText.text = "You are not accepting our terms"
-
+        val submit: Button = registerView.findViewById(R.id.registerButton)
         submit.setOnClickListener {
-            if (checked) {
-                val username: String = this.registerUsername.text.toString()
-                val email: String = this.registerEmail.text.toString()
-                val password: String = this.registerPassword.text.toString()
-                user = RegisterUser(username, email, password)
+            if (switch.isChecked) {
+                user = RegisterUser(username.text.toString(), email.text.toString(), password.text.toString())
                 AsyncTaskHandleJson().execute()
             } else {
-                Toast.makeText(view.context, "Accept our terms bitch", Toast.LENGTH_LONG).show()
+                Toast.makeText(registerView.context, "Accept the terms bitch", Toast.LENGTH_LONG).show()
             }
         }
-        switch.setOnClickListener {
-            when(checked) {
-                true -> {
-                    switchText.setTextColor(Color.GRAY)
-                    switchText.text = "You are not accepting our terms"
-                    checked = false
-                }
-                false -> {
-                    switchText.setTextColor(rgb(51, 204, 51))
-                    switchText.text = "You are accepting our terms"
-                    checked = true
+
+        switch.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                when(isChecked) {
+                    true -> {
+                        switchTextView.setTextColor(rgb(51, 204, 51))
+                        switchTextView.text = getString(R.string.switch_on)
+                    }
+                    false -> {
+                        switchTextView.setTextColor(Color.GRAY)
+                        switchTextView.text = getString(R.string.switch_off)
+                    }
                 }
             }
-        }
-        registerView = view
-        return view
+        })
+
+        return registerView
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -76,8 +84,7 @@ class RegisterFragment : Fragment() {
         override fun doInBackground(vararg p0: String?): String {
             Thread.sleep(2000)
             var res = ""
-            val call: Call<ResponseBody> = RetrofitClient
-                .getInstance()
+            val call: Call<ResponseBody> = RetrofitClient.getInstance()
                 .aPi
                 .register(user)
 
@@ -93,15 +100,13 @@ class RegisterFragment : Fragment() {
                     try {
                         res = response.body()!!.string()
                         Toast.makeText(registerView.context, res, Toast.LENGTH_LONG).show()
-                        val username = registerView.findViewById<EditText>(R.id.registerUsername)
-                        val email = registerView.findViewById<EditText>(R.id.registerEmail)
-                        val password = registerView.findViewById<EditText>(R.id.registerPassword)
                         username.setText("")
                         username.clearFocus()
                         email.setText("")
                         email.clearFocus()
                         password.setText("")
                         password.clearFocus()
+                        switch.isChecked = false
 
                     } catch (ex: IOException) {
                         ex.printStackTrace()

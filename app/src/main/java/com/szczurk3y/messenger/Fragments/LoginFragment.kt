@@ -1,4 +1,4 @@
-package com.szczurk3y.messenger
+package com.szczurk3y.messenger.Fragments
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -8,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.szczurk3y.messenger.LoginUser
+import com.szczurk3y.messenger.MainActivity
+import com.szczurk3y.messenger.R
+import com.szczurk3y.messenger.RetrofitClient
 import kotlinx.android.synthetic.main.fragment_login.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -51,8 +54,7 @@ class LoginFragment : Fragment() {
         override fun doInBackground(vararg p0: String?): String {
             Thread.sleep(2000)
             var res = ""
-            val call: Call<ResponseBody> = RetrofitClient
-                .getInstance()
+            val call: Call<ResponseBody> = RetrofitClient.getInstance()
                 .aPi
                 .login(user)
 
@@ -68,6 +70,9 @@ class LoginFragment : Fragment() {
                     try {
                         res = response.body()!!.string()
                         Toast.makeText(loginView.context, res, Toast.LENGTH_LONG).show()
+                        if (res == "You are now logged in!") {
+                            MainActivity.runUserContent()
+                        }
 
                     } catch (ex: IOException) {
                         ex.printStackTrace()

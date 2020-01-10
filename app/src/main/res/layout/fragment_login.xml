@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginFragment">
+    tools:context=".Fragments.LoginFragment">
 
     <EditText
         android:layout_marginTop="20dp"

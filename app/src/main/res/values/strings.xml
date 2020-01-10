@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Messenger</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="switch_off">You are not accepting our terms</string>
+    <string name="switch_on">You are accepting our terms</string>
 </resources>
