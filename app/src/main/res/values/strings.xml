@@ -2,4 +2,5 @@
     <string name="app_name">Messenger</string>
     <string name="switch_off">You are not accepting our terms</string>
     <string name="switch_on">You are accepting our terms</string>
+    <string name="enter_username">Enter Username</string>
 </resources>

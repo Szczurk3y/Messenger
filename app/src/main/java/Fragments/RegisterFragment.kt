@@ -1,4 +1,4 @@
-package com.szczurk3y.messenger.Fragments
+package Fragments
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -13,8 +13,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.szczurk3y.messenger.R
 import com.szczurk3y.messenger.RegisterUser
-import com.szczurk3y.messenger.RetrofitClient
-import kotlinx.android.synthetic.main.fragment_register.*
+import com.szczurk3y.messenger.ServiceBuilder
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,7 +45,7 @@ class RegisterFragment : Fragment() {
         submit.setOnClickListener {
             if (switch.isChecked) {
                 user = RegisterUser(username.text.toString(), email.text.toString(), password.text.toString())
-                AsyncTaskHandleJson().execute()
+                AsyncTaskHandleJSON().execute()
             } else {
                 Toast.makeText(registerView.context, "Accept the terms bitch", Toast.LENGTH_LONG).show()
             }
@@ -71,7 +70,7 @@ class RegisterFragment : Fragment() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class AsyncTaskHandleJson : AsyncTask<String, String, String>() {
+    private inner class AsyncTaskHandleJSON : AsyncTask<String, String, String>() {
         lateinit var pDialog: ProgressDialog
 
         override fun onPreExecute() {
@@ -84,8 +83,8 @@ class RegisterFragment : Fragment() {
         override fun doInBackground(vararg p0: String?): String {
             Thread.sleep(2000)
             var res = ""
-            val call: Call<ResponseBody> = RetrofitClient.getInstance()
-                .aPi
+            val call: Call<ResponseBody> = ServiceBuilder().getInstance()
+                .getService()
                 .register(user)
 
             call.enqueue(object : Callback<ResponseBody> {

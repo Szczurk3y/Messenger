@@ -1,4 +1,4 @@
-package com.szczurk3y.messenger.Fragments
+package Fragments
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -10,10 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.szczurk3y.messenger.LoginUser
-import com.szczurk3y.messenger.MainActivity
-import com.szczurk3y.messenger.R
-import com.szczurk3y.messenger.RetrofitClient
+import com.szczurk3y.messenger.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -33,7 +30,7 @@ class LoginFragment : Fragment() {
             val username = this.username_editText.text.toString()
             val password = this.password_editText.text.toString()
             user = LoginUser(username, password)
-            AsyncTaskHandleJson().execute()
+            AsyncTaskHandleJSON().execute()
         }
 
         loginView = view
@@ -41,7 +38,7 @@ class LoginFragment : Fragment() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class AsyncTaskHandleJson : AsyncTask<String, String, String>() {
+    private inner class AsyncTaskHandleJSON : AsyncTask<String, String, String>() {
         lateinit var dialog: ProgressDialog
 
         override fun onPreExecute() {
@@ -54,8 +51,8 @@ class LoginFragment : Fragment() {
         override fun doInBackground(vararg p0: String?): String {
             Thread.sleep(2000)
             var res = ""
-            val call: Call<ResponseBody> = RetrofitClient.getInstance()
-                .aPi
+            val call: Call<ResponseBody> = ServiceBuilder().getInstance()
+                .getService()
                 .login(user)
 
             call.enqueue(object : Callback<ResponseBody> {

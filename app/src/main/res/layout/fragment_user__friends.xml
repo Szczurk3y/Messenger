@@ -4,16 +4,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.User_FriendsFragment">
+    android:padding="50dp"
+    tools:context="Fragments.User_FriendsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:text="Add friends"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="200dp"
-        android:textColor="@color/colorAccent"
-        android:text="FRIENDS" />
+        android:id="@+id/addFriend_textView"
+        android:layout_marginTop="20dp"
+        android:textSize="30sp"
+        tools:ignore="HardcodedText" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addFriend_LinearLayout"
+        app:layout_constraintTop_toBottomOf="@id/addFriend_textView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_username"
+            android:id="@+id/recipient"
+            android:importantForAutofill="no"
+            tools:ignore="TextFields" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="send"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/sendButton"/>
+    </LinearLayout>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_weight="0"
+        app:layout_constraintTop_toBottomOf="@id/addFriend_LinearLayout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

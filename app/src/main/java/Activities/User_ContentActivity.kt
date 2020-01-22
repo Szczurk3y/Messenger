@@ -1,9 +1,9 @@
-package com.szczurk3y.messenger.Activities
+package Activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.szczurk3y.messenger.R
-import com.szczurk3y.messenger.ViewPagers.UserContent_ViewPageAdapter
+import ViewPagers.UserContent_ViewPageAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
 class User_ContentActivity : AppCompatActivity() {

@@ -1,13 +1,17 @@
-package com.szczurk3y.messenger.ViewPagers
+package ViewPagers
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.szczurk3y.messenger.Fragments.User_ChatsFragment
-import com.szczurk3y.messenger.Fragments.User_FriendsFragment
-import com.szczurk3y.messenger.Fragments.User_ProfileFragment
+import Fragments.User_ChatsFragment
+import Fragments.User_FriendsFragment
+import Fragments.User_ProfileFragment
 
 class UserContent_ViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+    companion object {
+        val friendsList = mutableListOf<String>()
+    }
+
     override fun getItem(position: Int): Fragment {
         var fragment: Fragment? = null
 

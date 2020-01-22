@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.szczurk3y.messenger.Activities.User_ContentActivity
-import com.szczurk3y.messenger.ViewPagers.ViewPageAdapter
+import Activities.User_ContentActivity
+import ViewPagers.ViewPageAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
