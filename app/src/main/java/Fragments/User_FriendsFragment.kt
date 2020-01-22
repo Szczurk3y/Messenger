@@ -1,6 +1,8 @@
 package Fragments
 
 
+import Activities.User_ContentActivity
+import Adapters.InvitationsAdapter
 import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,19 +10,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
-import com.szczurk3y.messenger.Friend
+import com.szczurk3y.messenger.Invitation
 
 import com.szczurk3y.messenger.R
 import com.szczurk3y.messenger.ServiceBuilder
-import ViewPagers.UserContent_ViewPageAdapter
+import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
+import kotlinx.android.synthetic.main.fragment_user__friends.*
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Call
+import java.io.IOException
 
-/**
- * A simple [Fragment] subclass.
- */
 class User_FriendsFragment : Fragment() {
+
+   lateinit var invitation: Invitation
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,35 +35,48 @@ class User_FriendsFragment : Fragment() {
 
         val button = view.findViewById<Button>(R.id.sendButton)
         button.setOnClickListener {
-            val recipient: String = view.findViewById<EditText>(R.id.recipient).text.toString()
-
         }
+
+        Thread(Runnable {
+            invitation = Invitation(recipient = User_ContentActivity.user.username)
+            Log.d("Invitation:", invitation.recipient)
+            AsyncTaskHandleJSON().execute()
+        }).start()
+
 
         return view
     }
 
-
+    @SuppressLint("StaticFieldLeak")
     private inner class AsyncTaskHandleJSON() : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg p0: String?): String {
             var res = ""
-            var requestall = ServiceBuilder().getInstance()
+            val requestCall = ServiceBuilder().getInstance()
                 .getService()
-                .getFriends()
+                .getInvitations(invitation)
 
-            requestall.enqueue(object : Callback<List<Friend>> {
-                override fun onFailure(call: retrofit2.Call<List<Friend>>, t: Throwable) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            requestCall.enqueue(object : Callback<List<Invitation>> {
+                override fun onFailure(call: Call<List<Invitation>>, t: Throwable) {
+                    Toast.makeText(this@User_FriendsFragment.context, t.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onResponse(
-                    call: retrofit2.Call<List<Friend>>,
-                    response: Response<List<Friend>>
+                    call: Call<List<Invitation>>,
+                    response: Response<List<Invitation>>
                 ) {
-                    //UserContent_ViewPageAdapter.friendsList.adap
+                    try {
+                        Toast.makeText(this@User_FriendsFragment.context, res, Toast.LENGTH_SHORT).show()
+                        User_ContentActivity.invitationsList = response.body()!!
+                        friendRecyclerView.adapter = InvitationsAdapter(User_ContentActivity.invitationsList)
+                        Log.i("Count", User_ContentActivity.invitationsList.count().toString())
+                        User_ContentActivity.invitationsList.forEach {
+                            Log.i("List", "_id: ${it._id}\nsendTime: ${it.sendTime}\nsender: ${it.sender}\nrecipient: ${it.recipient}\n__v: ${it.__v}")
+                        }
+                    } catch (ex: IOException) {
+                        Log.d("List Error:", ex.message!!)
+                    }
                 }
-
-
             })
 
             return res

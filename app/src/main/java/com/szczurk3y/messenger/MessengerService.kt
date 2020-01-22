@@ -15,7 +15,7 @@ interface MessengerService {
     @POST("login")
     fun login(@Body user: LoginUser): Call<ResponseBody>
 
-    @Headers("Content-Type: application/json")
+    @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
     @POST("invitations")
-    fun getFriends(): Call<List<Friend>>
+    fun getInvitations(@Body invitation: Invitation): Call<List<Invitation>>
 }

@@ -1,5 +1,6 @@
 package Fragments
 
+import Activities.User_ContentActivity
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.os.AsyncTask
@@ -19,7 +20,7 @@ import retrofit2.Response
 import java.io.IOException
 
 class LoginFragment : Fragment() {
-    lateinit var user: LoginUser
+
     lateinit var loginView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,7 +30,7 @@ class LoginFragment : Fragment() {
         submit.setOnClickListener {
             val username = this.username_editText.text.toString()
             val password = this.password_editText.text.toString()
-            user = LoginUser(username, password)
+            User_ContentActivity.user = LoginUser(username, password)
             AsyncTaskHandleJSON().execute()
         }
 
@@ -53,7 +54,7 @@ class LoginFragment : Fragment() {
             var res = ""
             val call: Call<ResponseBody> = ServiceBuilder().getInstance()
                 .getService()
-                .login(user)
+                .login(User_ContentActivity.user)
 
             call.enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

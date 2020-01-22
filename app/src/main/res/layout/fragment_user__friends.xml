@@ -41,10 +41,17 @@
             android:layout_marginLeft="20dp"
             android:id="@+id/sendButton"/>
     </LinearLayout>
-    <ListView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintVertical_weight="0"
-        app:layout_constraintTop_toBottomOf="@id/addFriend_LinearLayout"/>
+        app:layout_constraintTop_toBottomOf="@+id/addFriend_LinearLayout"
+        android:layout_marginTop="10dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/friendRecyclerView"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/invitation_item"/>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

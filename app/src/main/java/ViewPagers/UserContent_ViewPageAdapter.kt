@@ -8,9 +8,6 @@ import Fragments.User_FriendsFragment
 import Fragments.User_ProfileFragment
 
 class UserContent_ViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
-    companion object {
-        val friendsList = mutableListOf<String>()
-    }
 
     override fun getItem(position: Int): Fragment {
         var fragment: Fragment? = null

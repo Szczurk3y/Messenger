@@ -11,7 +11,10 @@ data class LoginUser(
     val password: String
 )
 
-data class Friend(
-    val sender: String,
-    val sendTime: String
+data class Invitation(
+    val _id: String = "",
+    val sendTime: String = "",
+    val sender: String = "",
+    val recipient: String,
+    val __v: String = ""
 )
