@@ -25,7 +25,13 @@ import java.io.IOException
 
 class User_FriendsFragment : Fragment() {
 
-   lateinit var invitation: Invitation
+    companion object {
+        const val GET_SENT = 1
+        const val GET_INVITATIONS = 2
+        const val GET_FRIENDS = 3
+    }
+
+    lateinit var invitation: Invitation
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,28 +39,31 @@ class User_FriendsFragment : Fragment() {
     ): View? {
         val view: View = inflater.inflate(R.layout.fragment_user__friends, container, false)
 
-        val button = view.findViewById<Button>(R.id.sendButton)
-        button.setOnClickListener {
+        val pendingButton = view.findViewById<Button>(R.id.pendingButton)
+        pendingButton.setOnClickListener {
+            Thread(Runnable {
+                invitation = Invitation(recipient = User_ContentActivity.user.username)
+                Log.d("Invitation:", invitation.recipient)
+                AsyncTaskHandleJSON(GET_INVITATIONS).execute()
+            }).start()
         }
 
-        Thread(Runnable {
-            invitation = Invitation(recipient = User_ContentActivity.user.username)
-            Log.d("Invitation:", invitation.recipient)
-            AsyncTaskHandleJSON().execute()
-        }).start()
+
 
 
         return view
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class AsyncTaskHandleJSON() : AsyncTask<String, String, String>() {
+    private inner class AsyncTaskHandleJSON(val whatQuery: Int) : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg p0: String?): String {
-            var res = ""
-            val requestCall = ServiceBuilder().getInstance()
-                .getService()
-                .getInvitations(invitation)
+            val requestCall: Call<List<Invitation>> = when(whatQuery) {
+                GET_SENT -> getSent()
+                GET_INVITATIONS -> getInvitations()
+                GET_FRIENDS -> getFriends()
+                else -> return Invitation(recipient = "").toString()
+            }
 
             requestCall.enqueue(object : Callback<List<Invitation>> {
                 override fun onFailure(call: Call<List<Invitation>>, t: Throwable) {
@@ -66,7 +75,6 @@ class User_FriendsFragment : Fragment() {
                     response: Response<List<Invitation>>
                 ) {
                     try {
-                        Toast.makeText(this@User_FriendsFragment.context, res, Toast.LENGTH_SHORT).show()
                         User_ContentActivity.invitationsList = response.body()!!
                         friendRecyclerView.adapter = InvitationsAdapter(User_ContentActivity.invitationsList)
                         Log.i("Count", User_ContentActivity.invitationsList.count().toString())
@@ -79,8 +87,14 @@ class User_FriendsFragment : Fragment() {
                 }
             })
 
-            return res
+            return ""
         }
+
+        fun getInvitations(): Call<List<Invitation>> = ServiceBuilder().getInstance().getService().getInvitations(invitation)
+
+        fun getSent(): Call<List<Invitation>> = ServiceBuilder().getInstance().getService().getInvitations(invitation)
+
+        fun getFriends(): Call<List<Invitation>> = ServiceBuilder().getInstance().getService().getInvitations(invitation)
 
 
     }

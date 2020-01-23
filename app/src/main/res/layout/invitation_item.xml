@@ -1,31 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="5dp">
 
     <androidx.cardview.widget.CardView
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="160dp">
+            android:padding="16dp"
+            android:background="#F7F6FF">
             <TextView
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sender_textView"
-                android:textSize="15sp"
                 android:layout_weight="1"
-                android:text="sender"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:text="@string/sender"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sendTime_textView"
-                android:text="date"
+                app:layout_constraintTop_toBottomOf="@id/sender_textView"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:text="@string/send_time"
                 android:layout_weight="1"
+                android:layout_marginTop="10dp"
                 android:textSize="15sp"/>
-        </LinearLayout>
+            <Button
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/refuse"
+                app:layout_constraintRight_toRightOf="parent"
+                android:background="#FF0058"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/refuse_button"
+                android:layout_weight="1"
+                android:layout_marginEnd="15dp"
+                android:textStyle="bold"
+                android:textColor="#fff"/>
+            <Button
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:id="@+id/accept_button"
+                android:background="#00FFA7"
+                android:layout_marginEnd="15dp"
+                android:layout_weight="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/refuse_button"
+                android:text="@string/accept"
+                android:textStyle="bold"
+                android:textColor="#FFF"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

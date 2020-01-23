@@ -3,4 +3,8 @@
     <string name="switch_off">You are not accepting our terms</string>
     <string name="switch_on">You are accepting our terms</string>
     <string name="enter_username">Enter Username</string>
+    <string name="accept">Accept</string>
+    <string name="refuse">Refuse</string>
+    <string name="send_time">Send time</string>
+    <string name="sender">Sender</string>
 </resources>
