@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add friends"
+        android:text="Invite friends"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/addFriend_textView"
         android:layout_marginTop="40dp"
@@ -85,7 +85,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/friendRecyclerView"
+            android:id="@+id/recyclerView"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/invitation_item"/>

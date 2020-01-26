@@ -30,7 +30,7 @@ class LoginFragment : Fragment() {
         submit.setOnClickListener {
             val username = this.username_editText.text.toString()
             val password = this.password_editText.text.toString()
-            User_ContentActivity.user = LoginUser(username, password)
+            User_ContentActivity.user = User(username, password)
             AsyncTaskHandleJSON().execute()
         }
 

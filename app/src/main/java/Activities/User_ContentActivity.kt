@@ -4,14 +4,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.szczurk3y.messenger.R
 import ViewPagers.UserContent_ViewPageAdapter
+import com.szczurk3y.messenger.FriendsRelation
 import com.szczurk3y.messenger.Invitation
-import com.szczurk3y.messenger.LoginUser
+import com.szczurk3y.messenger.User
 import kotlinx.android.synthetic.main.activity_main.*
 
 class User_ContentActivity : AppCompatActivity() {
     companion object {
-        lateinit var user: LoginUser
+        lateinit var user: User
         var invitationsList = listOf<Invitation>()
+        var friendsList = listOf<FriendsRelation>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

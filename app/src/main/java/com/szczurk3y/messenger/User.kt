@@ -6,9 +6,14 @@ data class RegisterUser(
     val password: String
 )
 
-data class LoginUser(
+data class User(
     val username: String,
     val password: String
+)
+
+data class FriendsRelation(
+    val username: String = "",
+    val friend: String = ""
 )
 
 data class Invitation(

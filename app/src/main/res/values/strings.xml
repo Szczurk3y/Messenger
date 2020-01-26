@@ -7,4 +7,7 @@
     <string name="refuse">Refuse</string>
     <string name="send_time">Send time</string>
     <string name="sender">Sender</string>
+    <string name="friend">friend</string>
+    <string name="delete">delete</string>
+    <string name="create_chat">create chat</string>
 </resources>
