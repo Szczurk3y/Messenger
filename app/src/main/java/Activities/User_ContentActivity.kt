@@ -14,6 +14,7 @@ class User_ContentActivity : AppCompatActivity() {
         lateinit var user: User
         var invitationsList = listOf<Invitation>()
         var friendsList = listOf<FriendsRelation>()
+        val sentList = listOf<Invitation>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

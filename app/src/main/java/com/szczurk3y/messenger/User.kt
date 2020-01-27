@@ -20,6 +20,6 @@ data class Invitation(
     val _id: String = "",
     val sendTime: String = "",
     val sender: String = "",
-    val recipient: String,
+    val recipient: String = "",
     val __v: String = ""
 )
