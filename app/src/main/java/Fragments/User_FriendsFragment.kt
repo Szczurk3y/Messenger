@@ -17,8 +17,10 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import com.szczurk3y.messenger.*
 import kotlinx.android.synthetic.main.fragment_user__friends.*
+import kotlinx.android.synthetic.main.fragment_user__friends.view.*
 import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,22 +32,29 @@ class User_FriendsFragment : Fragment() {
     companion object {
         const val GET_SENT = 1
         const val GET_PENDING = 2
+        @SuppressLint("StaticFieldLeak")
+        lateinit var friendsView: View
+        lateinit var invitation: Invitation
+        lateinit var friendsRelation: FriendsRelation
+
+        fun refreshInvitations() {
+            Log.d("Invitation:", invitation.recipient)
+            friendsView.recyclerView.adapter = InvitationsAdapter(User_ContentActivity.invitationsList)
+        }
     }
 
-    lateinit var invitation: Invitation
-    lateinit var friendsRelation: FriendsRelation
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view: View = inflater.inflate(R.layout.fragment_user__friends, container, false)
+        friendsView = view
 
         val pendingButton = view.findViewById<Button>(R.id.pendingButton)
         pendingButton.setOnClickListener {
             invitation = Invitation(recipient = User_ContentActivity.user.username)
             Thread(Runnable {
-                Log.d("Invitation:", invitation.recipient)
                 GetInvitations(GET_PENDING, User_ContentActivity.invitationsList).execute()
             }).start()
         }
@@ -57,6 +66,8 @@ class User_FriendsFragment : Fragment() {
                 GetFriends().execute()
             }).start()
         }
+
+        friendsButton.performClick()
 
         val sentButton = view.findViewById<Button>(R.id.sentButton)
         sentButton.setOnClickListener {
@@ -79,7 +90,7 @@ class User_FriendsFragment : Fragment() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class GetInvitations(val whatQuery: Int, var list: List<Invitation>) : AsyncTask<String, String, String>() {
+    private class GetInvitations(val whatQuery: Int, var list: List<Invitation>) : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg p0: String?): String {
 
@@ -91,7 +102,7 @@ class User_FriendsFragment : Fragment() {
 
             requestCall!!.enqueue(object : Callback<List<Invitation>> {
                 override fun onFailure(call: Call<List<Invitation>>, t: Throwable) {
-                    Toast.makeText(this@User_FriendsFragment.context, t.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(friendsView.context, t.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onResponse(
@@ -102,10 +113,10 @@ class User_FriendsFragment : Fragment() {
                         list = response.body()!!
                         when(whatQuery) {
                             GET_PENDING -> {
-                                recyclerView.adapter = InvitationsAdapter(list)
+                                friendsView.recyclerView.adapter = InvitationsAdapter(list)
                             }
                             GET_SENT -> {
-                                recyclerView.adapter = SentAdapter(list)
+                                friendsView.recyclerView.adapter = SentAdapter(list)
                             }
                         }
                         list.forEach {
