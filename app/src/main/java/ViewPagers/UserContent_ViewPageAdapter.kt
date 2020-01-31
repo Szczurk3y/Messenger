@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import Fragments.User_ChatsFragment
-import Fragments.User_FriendsFragment
+import Fragments.UserFriendsFragment
 import Fragments.User_ProfileFragment
 
 class UserContent_ViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
@@ -14,7 +14,7 @@ class UserContent_ViewPageAdapter(fragmentManager: FragmentManager) : FragmentPa
 
         when(position) {
             0 -> {
-                fragment = User_FriendsFragment()
+                fragment = UserFriendsFragment()
             }
 
             1 -> {

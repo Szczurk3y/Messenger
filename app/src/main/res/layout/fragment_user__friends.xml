@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="35dp"
-    tools:context="Fragments.User_FriendsFragment">
+    tools:context="Fragments.UserFriendsFragment">
 
     <TextView
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:hint="@string/enter_username"
-            android:id="@+id/recipient"
+            android:id="@+id/enter_recipient"
             android:importantForAutofill="no"
             tools:ignore="TextFields" />
 

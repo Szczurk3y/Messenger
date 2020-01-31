@@ -15,9 +15,7 @@ import android.widget.Button
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.EditText
 import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
 import com.szczurk3y.messenger.*
 import kotlinx.android.synthetic.main.fragment_user__friends.*
 import kotlinx.android.synthetic.main.fragment_user__friends.view.*
@@ -27,7 +25,7 @@ import retrofit2.Response
 import retrofit2.Call
 import java.io.IOException
 
-class User_FriendsFragment : Fragment() {
+class UserFriendsFragment : Fragment() {
 
     companion object {
         const val GET_SENT = 1
@@ -37,9 +35,22 @@ class User_FriendsFragment : Fragment() {
         lateinit var invitation: Invitation
         lateinit var friendsRelation: FriendsRelation
 
+        fun refreshFriends() {
+            friendsView.recyclerView.adapter = FriendsAdapter(User_ContentActivity.friendsList)
+        }
+
         fun refreshInvitations() {
-            Log.d("Invitation:", invitation.recipient)
             friendsView.recyclerView.adapter = InvitationsAdapter(User_ContentActivity.invitationsList)
+            User_ContentActivity.invitationsList.forEach {
+                Log.i("Invitations List", "${it.recipient}\n${it.sender}\n${it.sendTime}")
+            }
+        }
+
+        fun refreshSent() {
+            friendsView.recyclerView.adapter = SentAdapter(User_ContentActivity.sentList)
+            User_ContentActivity.sentList.forEach {
+                Log.i("Sent List", "${it.recipient}\n${it.sender}\n${it.sendTime}")
+            }
         }
     }
 
@@ -63,7 +74,7 @@ class User_FriendsFragment : Fragment() {
         friendsButton.setOnClickListener {
             friendsRelation = FriendsRelation(username = User_ContentActivity.user.username)
             Thread(Runnable {
-                GetFriends().execute()
+                GetFriends(User_ContentActivity.friendsList).execute()
             }).start()
         }
 
@@ -79,10 +90,11 @@ class User_FriendsFragment : Fragment() {
 
         val sendInvitationButton = view.findViewById<Button>(R.id.sendButton)
         sendInvitationButton.setOnClickListener {
-            val recipient: String = this.recipient.text.toString()
+            val recipient: String = this.enter_recipient.text.toString()
+            this.enter_recipient.text.clear()
             invitation = Invitation(sender = User_ContentActivity.user.username, recipient = recipient)
             Thread(Runnable {
-                SendInvitation().execute()
+                SendInvitation(invitation).execute()
             }).start()
         }
 
@@ -90,37 +102,36 @@ class User_FriendsFragment : Fragment() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class GetInvitations(val whatQuery: Int, var list: List<Invitation>) : AsyncTask<String, String, String>() {
+    private class GetInvitations(val whatQuery: Int, var list: MutableList<Invitation>) : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg p0: String?): String {
 
-            val requestCall: Call<List<Invitation>>? = when(whatQuery) {
+            val requestCall: Call<MutableList<Invitation>>? = when(whatQuery) {
                 GET_PENDING -> ServiceBuilder().getInstance().getService().getInvitations(invitation)
-                GET_SENT -> ServiceBuilder().getInstance().getService().getSent(invitation)
+                GET_SENT -> ServiceBuilder().getInstance().getService().getSentInvitations(invitation)
                 else -> null
             }
 
-            requestCall!!.enqueue(object : Callback<List<Invitation>> {
-                override fun onFailure(call: Call<List<Invitation>>, t: Throwable) {
+            requestCall!!.enqueue(object : Callback<MutableList<Invitation>> {
+                override fun onFailure(call: Call<MutableList<Invitation>>, t: Throwable) {
                     Toast.makeText(friendsView.context, t.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onResponse(
-                    call: Call<List<Invitation>>,
-                    response: Response<List<Invitation>>
+                    call: Call<MutableList<Invitation>>,
+                    response: Response<MutableList<Invitation>>
                 ) {
                     try {
                         list = response.body()!!
                         when(whatQuery) {
                             GET_PENDING -> {
                                 friendsView.recyclerView.adapter = InvitationsAdapter(list)
+                                User_ContentActivity.invitationsList = list
                             }
                             GET_SENT -> {
                                 friendsView.recyclerView.adapter = SentAdapter(list)
+                                User_ContentActivity.sentList = list
                             }
-                        }
-                        list.forEach {
-                            Log.i("Invitations List", "_id: ${it._id}\nsendTime: ${it.sendTime}\nsender: ${it.sender}\nrecipient: ${it.recipient}\n__v: ${it.__v}")
                         }
                     } catch (ex: IOException) {
                         Log.d("List Error:", ex.message!!)
@@ -133,26 +144,24 @@ class User_FriendsFragment : Fragment() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class GetFriends : AsyncTask<String, String, String>() {
+    private inner class GetFriends(var list: MutableList<FriendsRelation>) : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg p0: String?): String {
-            val requestCall: Call<List<FriendsRelation>> =  ServiceBuilder().getInstance().getService().getFriends(friendsRelation)
+            val requestCall: Call<MutableList<FriendsRelation>> =  ServiceBuilder().getInstance().getService().getFriends(friendsRelation)
 
-            requestCall.enqueue(object : Callback<List<FriendsRelation>> {
-                override fun onFailure(call: Call<List<FriendsRelation>>, t: Throwable) {
-                    Toast.makeText(this@User_FriendsFragment.context, t.message, Toast.LENGTH_SHORT).show()
+            requestCall.enqueue(object : Callback<MutableList<FriendsRelation>> {
+                override fun onFailure(call: Call<MutableList<FriendsRelation>>, t: Throwable) {
+                    Toast.makeText(this@UserFriendsFragment.context, t.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onResponse(
-                    call: Call<List<FriendsRelation>>,
-                    response: Response<List<FriendsRelation>>
+                    call: Call<MutableList<FriendsRelation>>,
+                    response: Response<MutableList<FriendsRelation>>
                 ) {
                     try {
-                        User_ContentActivity.friendsList = response.body()!!
-                        recyclerView.adapter = FriendsAdapter(User_ContentActivity.friendsList)
-                        User_ContentActivity.friendsList.forEach {
-                            //Log.i("Friends List", "username: ${it.username}\nfriend: ${it.friend}")
-                        }
+                        list = response.body()!!
+                        friendsView.recyclerView.adapter = FriendsAdapter(list)
+                        User_ContentActivity.friendsList = list
                     } catch (ex: IOException) {
                         Log.d("Friends List Error:", ex.message!!)
                     }
@@ -164,14 +173,14 @@ class User_FriendsFragment : Fragment() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class SendInvitation : AsyncTask<String, String, String>() {
+    private inner class SendInvitation(val temp_invitation: Invitation) : AsyncTask<String, String, String>() {
         override fun doInBackground(vararg p0: String?): String {
-            val requestCall: Call<ResponseBody> = ServiceBuilder().getInstance().getService().invite(invitation)
+            val requestCall: Call<ResponseBody> = ServiceBuilder().getInstance().getService().inviteFriend(temp_invitation)
             var message: String = ""
 
             requestCall.enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Toast.makeText(this@User_FriendsFragment.context, t.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@UserFriendsFragment.context, t.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onResponse(
@@ -179,7 +188,7 @@ class User_FriendsFragment : Fragment() {
                     response: Response<ResponseBody>
                 ) {
                     message = response.body()!!.string()
-                    Toast.makeText(this@User_FriendsFragment.context, message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@UserFriendsFragment.context, message, Toast.LENGTH_SHORT).show()
                 }
 
             })

@@ -17,25 +17,35 @@ interface MessengerService {
 
     @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
     @POST("invitations")
-    fun getInvitations(@Body invitation: Invitation): Call<List<Invitation>>
+    fun getInvitations(@Body invitation: Invitation): Call<MutableList<Invitation>>
 
     @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
     @POST("invitations/sent")
-    fun getSent(@Body invitation: Invitation): Call<List<Invitation>>
+    fun getSentInvitations(@Body invitation: Invitation): Call<MutableList<Invitation>>
 
     @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
     @POST("invitations/invite")
-    fun invite(@Body invitation: Invitation): Call<ResponseBody>
-
-    @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
-    @POST("friends")
-    fun getFriends(@Body friendsRelation: FriendsRelation): Call<List<FriendsRelation>>
-
-    @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
-    @POST("friends/add")
-    fun add(@Body friendsRelation: FriendsRelation): Call<ResponseBody>
+    fun inviteFriend(@Body invitation: Invitation): Call<ResponseBody>
 
     @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
     @POST("invitations/refuse")
-    fun refuse(@Body invitation: Invitation): Call<ResponseBody>
+    fun refuseInvitation(@Body invitation: Invitation): Call<ResponseBody>
+
+    @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
+    @POST("invitations/cancel")
+    fun cancelInvitation(@Body invitation: Invitation): Call<ResponseBody>
+
+    @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
+    @POST("friends")
+    fun getFriends(@Body friendsRelation: FriendsRelation): Call<MutableList<FriendsRelation>>
+
+    @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
+    @POST("friends/add")
+    fun addFriend(@Body friendsRelation: FriendsRelation): Call<ResponseBody>
+
+    @Headers("Content-Type: application/json", "auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcm5hbWUiOiJzaWVtYSIsImlhdCI6MTU3OTYxMzQzNX0.Y1YYwlVxM36dEY3Yy5D7waPeVp1Ge2FIqsiTgwZ5w9c")
+    @POST("friends/delete")
+    fun deleteFriend(@Body friendsRelation: FriendsRelation): Call<ResponseBody>
+
+
 }

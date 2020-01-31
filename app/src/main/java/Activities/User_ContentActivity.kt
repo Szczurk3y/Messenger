@@ -12,9 +12,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 class User_ContentActivity : AppCompatActivity() {
     companion object {
         lateinit var user: User
-        var invitationsList = listOf<Invitation>()
-        var friendsList = listOf<FriendsRelation>()
-        val sentList = listOf<Invitation>()
+        var invitationsList = mutableListOf<Invitation>()
+        var friendsList = mutableListOf<FriendsRelation>()
+        var sentList = mutableListOf<Invitation>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

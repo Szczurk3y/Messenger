@@ -1,5 +1,7 @@
 package Adapters
 
+import Activities.User_ContentActivity
+import Fragments.UserFriendsFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +11,13 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.szczurk3y.messenger.Invitation
 import com.szczurk3y.messenger.R
-import java.util.zip.Inflater
+import com.szczurk3y.messenger.ServiceBuilder
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class SentAdapter(val sentList: List<Invitation>) : RecyclerView.Adapter<SentAdapter.ViewHolder>() {
+class SentAdapter(private val sentList: List<Invitation>) : RecyclerView.Adapter<SentAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.sent_item, parent, false)
 
@@ -25,7 +31,23 @@ class SentAdapter(val sentList: List<Invitation>) : RecyclerView.Adapter<SentAda
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.recipient.text = sentList[position].recipient
         holder.cancelButton.setOnClickListener {
-            Toast.makeText(it.context, "Invitation canceled.", Toast.LENGTH_SHORT).show()
+            val invitation = Invitation(sender = User_ContentActivity.user.username, recipient = sentList[position].recipient)
+            val requestCall = ServiceBuilder().getInstance().getService().cancelInvitation(invitation)
+            requestCall.enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Toast.makeText(it.context, t.message, Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    val res = response.body()!!.string()
+                    User_ContentActivity.sentList.removeAt(position)
+                    UserFriendsFragment.refreshSent()
+                    Toast.makeText(it.context, res, Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 
