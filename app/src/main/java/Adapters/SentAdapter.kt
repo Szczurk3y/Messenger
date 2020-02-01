@@ -1,6 +1,6 @@
 package Adapters
 
-import Activities.User_ContentActivity
+import Activities.UserContentActivity
 import Fragments.UserFriendsFragment
 import android.view.LayoutInflater
 import android.view.View
@@ -31,8 +31,8 @@ class SentAdapter(private val sentList: List<Invitation>) : RecyclerView.Adapter
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.recipient.text = sentList[position].recipient
         holder.cancelButton.setOnClickListener {
-            val invitation = Invitation(sender = User_ContentActivity.user.username, recipient = sentList[position].recipient)
-            val requestCall = ServiceBuilder().getInstance().getService().cancelInvitation(invitation)
+            val invitation = Invitation(sender = UserContentActivity.user.username, recipient = sentList[position].recipient)
+            val requestCall = ServiceBuilder().getInstance().getService().cancelInvitation(UserContentActivity.token, invitation)
             requestCall.enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(it.context, t.message, Toast.LENGTH_SHORT).show()
@@ -43,7 +43,7 @@ class SentAdapter(private val sentList: List<Invitation>) : RecyclerView.Adapter
                     response: Response<ResponseBody>
                 ) {
                     val res = response.body()!!.string()
-                    User_ContentActivity.sentList.removeAt(position)
+                    UserContentActivity.sentList.removeAt(position)
                     UserFriendsFragment.refreshSent()
                     Toast.makeText(it.context, res, Toast.LENGTH_SHORT).show()
                 }

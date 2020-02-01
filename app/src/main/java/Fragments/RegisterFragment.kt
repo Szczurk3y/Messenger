@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.szczurk3y.messenger.R
 import com.szczurk3y.messenger.RegisterUser
+import com.szczurk3y.messenger.RegistrationServerResponse
 import com.szczurk3y.messenger.ServiceBuilder
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -47,7 +48,7 @@ class RegisterFragment : Fragment() {
                 user = RegisterUser(username.text.toString(), email.text.toString(), password.text.toString())
                 AsyncTaskHandleJSON().execute()
             } else {
-                Toast.makeText(registerView.context, "Accept the terms bitch", Toast.LENGTH_LONG).show()
+                Toast.makeText(registerView.context, "Accept our terms bitch", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -81,39 +82,39 @@ class RegisterFragment : Fragment() {
             pDialog.show()
         }
         override fun doInBackground(vararg p0: String?): String {
-            Thread.sleep(2000)
-            var res = ""
-            val call: Call<ResponseBody> = ServiceBuilder().getInstance()
+            Thread.sleep(1000)
+            val call: Call<RegistrationServerResponse> = ServiceBuilder().getInstance()
                 .getService()
                 .register(user)
 
-            call.enqueue(object : Callback<ResponseBody> {
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            call.enqueue(object : Callback<RegistrationServerResponse> {
+                override fun onFailure(call: Call<RegistrationServerResponse>, t: Throwable) {
                     Toast.makeText(registerView.context, t.message, Toast.LENGTH_LONG).show()
                 }
 
                 override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
+                    call: Call<RegistrationServerResponse>,
+                    response: Response<RegistrationServerResponse>
                 ) {
                     try {
-                        res = response.body()!!.string()
-                        Toast.makeText(registerView.context, res, Toast.LENGTH_LONG).show()
-                        username.setText("")
-                        username.clearFocus()
-                        email.setText("")
-                        email.clearFocus()
-                        password.setText("")
-                        password.clearFocus()
-                        switch.isChecked = false
-
+                        val res = response.body()!!
+                        Toast.makeText(registerView.context, res.message, Toast.LENGTH_LONG).show()
+                        if (res.isRegistered) {
+                            username.setText("")
+                            username.clearFocus()
+                            email.setText("")
+                            email.clearFocus()
+                            password.setText("")
+                            password.clearFocus()
+                            switch.isChecked = false
+                        }
                     } catch (ex: IOException) {
                         ex.printStackTrace()
                     }
                 }
             })
 
-            return res
+            return ""
         }
 
         override fun onPostExecute(result: String?) {

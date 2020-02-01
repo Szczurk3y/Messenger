@@ -1,6 +1,6 @@
 package Adapters
 
-import Activities.User_ContentActivity
+import Activities.UserContentActivity
 import Fragments.UserFriendsFragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,8 +33,8 @@ class InvitationsAdapter(private val invitationsList: List<Invitation>) : Recycl
         holder.sender_textView.text = invitationsList[position].sender
         holder.sendTime_textView.text = invitationsList[position].sendTime
         holder.accept_button.setOnClickListener {
-            val friendsRelation = FriendsRelation(User_ContentActivity.user.username, invitationsList[position].sender)
-            val requestCall = ServiceBuilder().getInstance().getService().addFriend(friendsRelation)
+            val friendsRelation = FriendsRelation(UserContentActivity.user.username, invitationsList[position].sender)
+            val requestCall = ServiceBuilder().getInstance().getService().addFriend(UserContentActivity.token, friendsRelation)
             requestCall.enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(it.context, t.message, Toast.LENGTH_SHORT).show()
@@ -46,15 +46,15 @@ class InvitationsAdapter(private val invitationsList: List<Invitation>) : Recycl
                 ) {
                     val res = response.body()!!.string()
                     Toast.makeText(it.context, res, Toast.LENGTH_SHORT).show()
-                    User_ContentActivity.invitationsList.removeAt(position)
+                    UserContentActivity.invitationsList.removeAt(position)
                     UserFriendsFragment.refreshInvitations()
                 }
 
             })
         }
         holder.refuse_button.setOnClickListener {
-            val invitation = Invitation(recipient = User_ContentActivity.user.username, sender = invitationsList[position].sender)
-            val requestCall = ServiceBuilder().getInstance().getService().refuseInvitation(invitation)
+            val invitation = Invitation(recipient = UserContentActivity.user.username, sender = invitationsList[position].sender)
+            val requestCall = ServiceBuilder().getInstance().getService().refuseInvitation(UserContentActivity.token, invitation)
             requestCall.enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(it.context, t.message, Toast.LENGTH_SHORT).show()
@@ -65,7 +65,7 @@ class InvitationsAdapter(private val invitationsList: List<Invitation>) : Recycl
                     response: Response<ResponseBody>
                 ) {
                     val res = response.body()!!.string()
-                    User_ContentActivity.invitationsList.removeAt(position)
+                    UserContentActivity.invitationsList.removeAt(position)
                     UserFriendsFragment.refreshInvitations()
                     Toast.makeText(it.context, res, Toast.LENGTH_SHORT).show()
                 }

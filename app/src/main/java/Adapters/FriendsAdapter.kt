@@ -1,6 +1,6 @@
 package Adapters
 
-import Activities.User_ContentActivity
+import Activities.UserContentActivity
 import Fragments.UserFriendsFragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -34,8 +34,8 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
             Toast.makeText(it.context, "Chat created!", Toast.LENGTH_SHORT).show()
         }
         holder.deleteFriend.setOnClickListener {
-            val friendsRelation = FriendsRelation(User_ContentActivity.user.username, friendsList[position].friend)
-            val requestCall = ServiceBuilder().getInstance().getService().deleteFriend(friendsRelation)
+            val friendsRelation = FriendsRelation(UserContentActivity.user.username, friendsList[position].friend)
+            val requestCall = ServiceBuilder().getInstance().getService().deleteFriend(UserContentActivity.token, friendsRelation)
             requestCall.enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(it.context, t.message, Toast.LENGTH_SHORT).show()
@@ -47,9 +47,8 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
                 ) {
                     val res = response.body()!!.string()
                     Toast.makeText(it.context, res, Toast.LENGTH_SHORT).show()
-                    User_ContentActivity.friendsList.removeAt(position)
+                    UserContentActivity.friendsList.removeAt(position)
                     UserFriendsFragment.refreshFriends()
-                    Log.i("Refresh friends", "refreshed")
                 }
             })
         }

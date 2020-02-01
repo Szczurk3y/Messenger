@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import Activities.User_ContentActivity
+import Activities.UserContentActivity
 import ViewPagers.ViewPageAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -18,18 +18,20 @@ class MainActivity : AppCompatActivity() {
         val viewPageAdapter = ViewPageAdapter(supportFragmentManager)
         this.viewPager.adapter = viewPageAdapter
         this.tabLayout.setupWithViewPager(this.viewPager)
-        mainContext = this
-        userContentActivity = Intent(applicationContext, User_ContentActivity::class.java)
+        context = applicationContext
 
     }
 
     companion object {
         @SuppressLint("StaticFieldLeak")
-        lateinit var mainContext: Context
+        lateinit var context: Context
         lateinit var userContentActivity: Intent
 
-        fun runUserContent() {
-            mainContext.startActivity(userContentActivity)
+        fun runUserContent(loggedUser: User, token: String) {
+            UserContentActivity.user = loggedUser
+            UserContentActivity.token = token
+            userContentActivity = Intent(context, UserContentActivity::class.java)
+            context.startActivity(userContentActivity)
         }
     }
 }

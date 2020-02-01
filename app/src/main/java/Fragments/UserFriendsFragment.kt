@@ -1,7 +1,7 @@
 package Fragments
 
 
-import Activities.User_ContentActivity
+import Activities.UserContentActivity
 import Adapters.FriendsAdapter
 import Adapters.InvitationsAdapter
 import Adapters.SentAdapter
@@ -36,19 +36,19 @@ class UserFriendsFragment : Fragment() {
         lateinit var friendsRelation: FriendsRelation
 
         fun refreshFriends() {
-            friendsView.recyclerView.adapter = FriendsAdapter(User_ContentActivity.friendsList)
+            friendsView.recyclerView.adapter = FriendsAdapter(UserContentActivity.friendsList)
         }
 
         fun refreshInvitations() {
-            friendsView.recyclerView.adapter = InvitationsAdapter(User_ContentActivity.invitationsList)
-            User_ContentActivity.invitationsList.forEach {
+            friendsView.recyclerView.adapter = InvitationsAdapter(UserContentActivity.invitationsList)
+            UserContentActivity.invitationsList.forEach {
                 Log.i("Invitations List", "${it.recipient}\n${it.sender}\n${it.sendTime}")
             }
         }
 
         fun refreshSent() {
-            friendsView.recyclerView.adapter = SentAdapter(User_ContentActivity.sentList)
-            User_ContentActivity.sentList.forEach {
+            friendsView.recyclerView.adapter = SentAdapter(UserContentActivity.sentList)
+            UserContentActivity.sentList.forEach {
                 Log.i("Sent List", "${it.recipient}\n${it.sender}\n${it.sendTime}")
             }
         }
@@ -64,17 +64,17 @@ class UserFriendsFragment : Fragment() {
 
         val pendingButton = view.findViewById<Button>(R.id.pendingButton)
         pendingButton.setOnClickListener {
-            invitation = Invitation(recipient = User_ContentActivity.user.username)
+            invitation = Invitation(recipient = UserContentActivity.user.username)
             Thread(Runnable {
-                GetInvitations(GET_PENDING, User_ContentActivity.invitationsList).execute()
+                GetInvitations(GET_PENDING, UserContentActivity.invitationsList).execute()
             }).start()
         }
 
         val friendsButton =  view.findViewById<Button>(R.id.friendButton)
         friendsButton.setOnClickListener {
-            friendsRelation = FriendsRelation(username = User_ContentActivity.user.username)
+            friendsRelation = FriendsRelation(username = UserContentActivity.user.username)
             Thread(Runnable {
-                GetFriends(User_ContentActivity.friendsList).execute()
+                GetFriends(UserContentActivity.friendsList).execute()
             }).start()
         }
 
@@ -82,20 +82,24 @@ class UserFriendsFragment : Fragment() {
 
         val sentButton = view.findViewById<Button>(R.id.sentButton)
         sentButton.setOnClickListener {
-            invitation = Invitation(sender = User_ContentActivity.user.username)
+            invitation = Invitation(sender = UserContentActivity.user.username)
             Thread(Runnable {
-                GetInvitations(GET_SENT, User_ContentActivity.sentList).execute()
+                GetInvitations(GET_SENT, UserContentActivity.sentList).execute()
             }).start()
         }
 
         val sendInvitationButton = view.findViewById<Button>(R.id.sendButton)
         sendInvitationButton.setOnClickListener {
             val recipient: String = this.enter_recipient.text.toString()
+            if(recipient != UserContentActivity.user.username) {
+                invitation = Invitation(sender = UserContentActivity.user.username, recipient = recipient)
+                Thread(Runnable {
+                    SendInvitation(invitation).execute()
+                }).start()
+            } else {
+                Toast.makeText(it.context, "You can't invite yourself XD", Toast.LENGTH_SHORT).show()
+            }
             this.enter_recipient.text.clear()
-            invitation = Invitation(sender = User_ContentActivity.user.username, recipient = recipient)
-            Thread(Runnable {
-                SendInvitation(invitation).execute()
-            }).start()
         }
 
         return view
@@ -107,8 +111,8 @@ class UserFriendsFragment : Fragment() {
         override fun doInBackground(vararg p0: String?): String {
 
             val requestCall: Call<MutableList<Invitation>>? = when(whatQuery) {
-                GET_PENDING -> ServiceBuilder().getInstance().getService().getInvitations(invitation)
-                GET_SENT -> ServiceBuilder().getInstance().getService().getSentInvitations(invitation)
+                GET_PENDING -> ServiceBuilder().getInstance().getService().getInvitations(UserContentActivity.token, invitation)
+                GET_SENT -> ServiceBuilder().getInstance().getService().getSentInvitations(UserContentActivity.token, invitation)
                 else -> null
             }
 
@@ -126,11 +130,11 @@ class UserFriendsFragment : Fragment() {
                         when(whatQuery) {
                             GET_PENDING -> {
                                 friendsView.recyclerView.adapter = InvitationsAdapter(list)
-                                User_ContentActivity.invitationsList = list
+                                UserContentActivity.invitationsList = list
                             }
                             GET_SENT -> {
                                 friendsView.recyclerView.adapter = SentAdapter(list)
-                                User_ContentActivity.sentList = list
+                                UserContentActivity.sentList = list
                             }
                         }
                     } catch (ex: IOException) {
@@ -147,7 +151,7 @@ class UserFriendsFragment : Fragment() {
     private inner class GetFriends(var list: MutableList<FriendsRelation>) : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg p0: String?): String {
-            val requestCall: Call<MutableList<FriendsRelation>> =  ServiceBuilder().getInstance().getService().getFriends(friendsRelation)
+            val requestCall: Call<MutableList<FriendsRelation>> =  ServiceBuilder().getInstance().getService().getFriends(UserContentActivity.token, friendsRelation)
 
             requestCall.enqueue(object : Callback<MutableList<FriendsRelation>> {
                 override fun onFailure(call: Call<MutableList<FriendsRelation>>, t: Throwable) {
@@ -161,7 +165,7 @@ class UserFriendsFragment : Fragment() {
                     try {
                         list = response.body()!!
                         friendsView.recyclerView.adapter = FriendsAdapter(list)
-                        User_ContentActivity.friendsList = list
+                        UserContentActivity.friendsList = list
                     } catch (ex: IOException) {
                         Log.d("Friends List Error:", ex.message!!)
                     }
@@ -175,7 +179,7 @@ class UserFriendsFragment : Fragment() {
     @SuppressLint("StaticFieldLeak")
     private inner class SendInvitation(val temp_invitation: Invitation) : AsyncTask<String, String, String>() {
         override fun doInBackground(vararg p0: String?): String {
-            val requestCall: Call<ResponseBody> = ServiceBuilder().getInstance().getService().inviteFriend(temp_invitation)
+            val requestCall: Call<ResponseBody> = ServiceBuilder().getInstance().getService().inviteFriend(UserContentActivity.token, temp_invitation)
             var message: String = ""
 
             requestCall.enqueue(object : Callback<ResponseBody> {
@@ -195,6 +199,5 @@ class UserFriendsFragment : Fragment() {
 
             return message
         }
-
     }
 }

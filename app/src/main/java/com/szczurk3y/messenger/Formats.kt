@@ -16,6 +16,17 @@ data class FriendsRelation(
     val friend: String = ""
 )
 
+data class LoginServerResponse(
+    val message: String = "",
+    val isLogged: Boolean = false,
+    val token: String = ""
+)
+
+data class RegistrationServerResponse(
+    val message: String = "",
+    val isRegistered: Boolean = false
+)
+
 data class Invitation(
     val _id: String = "",
     val sendTime: String = "",
