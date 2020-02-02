@@ -19,6 +19,7 @@ import android.widget.Toast
 import com.szczurk3y.messenger.*
 import kotlinx.android.synthetic.main.fragment_user__friends.*
 import kotlinx.android.synthetic.main.fragment_user__friends.view.*
+import kotlinx.android.synthetic.main.sent_item.*
 import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Response
@@ -91,13 +92,23 @@ class UserFriendsFragment : Fragment() {
         val sendInvitationButton = view.findViewById<Button>(R.id.sendButton)
         sendInvitationButton.setOnClickListener {
             val recipient: String = this.enter_recipient.text.toString()
-            if(recipient != UserContentActivity.user.username) {
+            val friendFinder: (FriendsRelation) -> Boolean = { friend -> friend.friend == recipient }
+            val invitationFinder: (Invitation) -> Boolean = { invitation -> invitation.sender == recipient }
+            val sentFinder: (Invitation) -> Boolean = { invitation -> invitation.recipient == recipient }
+
+            val isAlreadyFriend = UserContentActivity.friendsList.any(friendFinder)
+            val isAlreadyPending = UserContentActivity.invitationsList.any(invitationFinder)
+            val isAlreadySent = UserContentActivity.sentList.any(sentFinder)
+            if(recipient != UserContentActivity.user.username && !isAlreadyFriend && !isAlreadyPending && !isAlreadySent) {
                 invitation = Invitation(sender = UserContentActivity.user.username, recipient = recipient)
                 Thread(Runnable {
                     SendInvitation(invitation).execute()
                 }).start()
             } else {
-                Toast.makeText(it.context, "You can't invite yourself XD", Toast.LENGTH_SHORT).show()
+                if (recipient == UserContentActivity.user.username) Toast.makeText(it.context, "You can't invite yourself XD", Toast.LENGTH_SHORT).show()
+                else if (isAlreadyFriend) Toast.makeText(it.context, "You are already in friendship", Toast.LENGTH_SHORT).show()
+                else if (isAlreadyPending) Toast.makeText(it.context, "Check if you don't have pending invitation.", Toast.LENGTH_SHORT).show()
+                else if (isAlreadySent) Toast.makeText(it.context, "Already invited.", Toast.LENGTH_SHORT).show()
             }
             this.enter_recipient.text.clear()
         }
@@ -193,6 +204,7 @@ class UserFriendsFragment : Fragment() {
                 ) {
                     message = response.body()!!.string()
                     Toast.makeText(this@UserFriendsFragment.context, message, Toast.LENGTH_SHORT).show()
+                    UserContentActivity.sentList.add(temp_invitation)
                 }
 
             })
