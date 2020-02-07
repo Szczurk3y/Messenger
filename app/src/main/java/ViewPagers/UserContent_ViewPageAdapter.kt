@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import Fragments.User_ChatsFragment
 import Fragments.UserFriendsFragment
-import Fragments.User_ProfileFragment
+import Fragments.UserProfileFragment
 
 class UserContent_ViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
@@ -22,7 +22,7 @@ class UserContent_ViewPageAdapter(fragmentManager: FragmentManager) : FragmentPa
             }
 
             2 -> {
-                fragment = User_ProfileFragment()
+                fragment = UserProfileFragment()
             }
         }
 

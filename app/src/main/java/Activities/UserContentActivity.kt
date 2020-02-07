@@ -14,6 +14,7 @@ class UserContentActivity : AppCompatActivity() {
         var sentList = mutableListOf<Invitation>()
         lateinit var user: User
         lateinit var token: String
+        val activity = this
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -41,27 +41,26 @@
                 android:text="@string/refuse"
                 app:layout_constraintRight_toRightOf="parent"
                 android:background="#FF0058"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/accept_button"
                 android:id="@+id/refuse_button"
                 android:layout_weight="1"
-                android:layout_marginEnd="15dp"
+                android:layout_margin="15dp"
                 android:textStyle="bold"
                 android:textColor="#fff"/>
+
             <Button
+                android:id="@+id/accept_button"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
-                android:gravity="center"
-                android:id="@+id/accept_button"
-                android:background="#00FFA7"
-                android:layout_marginEnd="15dp"
                 android:layout_weight="1"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/refuse_button"
+                android:background="#00FFA7"
+                android:gravity="center"
                 android:text="@string/accept"
+                android:textColor="#FFF"
                 android:textStyle="bold"
-                android:textColor="#FFF"/>
+                android:layout_marginRight="15dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
