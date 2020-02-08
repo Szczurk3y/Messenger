@@ -1,7 +1,10 @@
 package Fragments
 
+import Dialogs.ConfirmPasswordDialog
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -15,8 +18,11 @@ import androidx.core.app.ActivityCompat
 
 import com.szczurk3y.messenger.R
 import android.provider.MediaStore
+import android.widget.EditText
+import android.widget.Toast
 import androidx.core.graphics.drawable.toIcon
 import kotlinx.android.synthetic.main.fragment_user__profile.*
+import kotlinx.android.synthetic.main.friend_item.*
 import okhttp3.internal.Internal
 
 
@@ -26,6 +32,7 @@ class UserProfileFragment : Fragment() {
         const val PERMISSION_CODE_READ: Int = 999
         const val IMAGE_PICK_CODE: Int = 997 // UwU
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +55,11 @@ class UserProfileFragment : Fragment() {
         val uploadInternalImageButton = view.findViewById(R.id.uploadInternalImage) as Button
         uploadInternalImageButton.setOnClickListener {
             pickImageFromGallery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        }
+
+        val submitButton = view.findViewById(R.id.submitButton) as Button
+        submitButton.setOnClickListener {
+            ConfirmPasswordDialog().show(fragmentManager, "confirmation")
         }
         return view
     }

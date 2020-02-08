@@ -12,4 +12,7 @@
     <string name="create_chat">create chat</string>
     <string name="cancel">cancel</string>
     <string name="chat">chat</string>
+    <string name="submit">submit</string>
+    <string name="confirm_password">Confirmation Required</string>
+    <string name="confirmation_required">Confirmation Required</string>
 </resources>
