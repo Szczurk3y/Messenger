@@ -2,15 +2,13 @@ package com.szczurk3y.messenger
 
 import Activities.UserContentActivity
 import Fragments.LoginFragment
+import android.graphics.Bitmap
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.Headers
-import retrofit2.http.POST
-
+import retrofit2.http.*
 
 
 interface MessengerService {
@@ -54,5 +52,13 @@ interface MessengerService {
     @POST("friends/delete")
     fun deleteFriend(@Header("auth-token") token: String, @Body friendsRelation: FriendsRelation): Call<ResponseBody>
 
+
+    @Headers("Content-Type: application/json")
+    @PATCH("update")
+    fun updateProfile(
+        @Header("auth-token") token: String,
+        @Body updatedUser: UpdatedUser
+//        @Part(value = "userImage", encoding = "8-bit") image: Bitmap
+    ): Call<UpdatedUser>
 
 }

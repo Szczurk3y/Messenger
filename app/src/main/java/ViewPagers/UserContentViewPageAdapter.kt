@@ -7,7 +7,7 @@ import Fragments.User_ChatsFragment
 import Fragments.UserFriendsFragment
 import Fragments.UserProfileFragment
 
-class UserContent_ViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+class UserContentViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
         var fragment: Fragment? = null

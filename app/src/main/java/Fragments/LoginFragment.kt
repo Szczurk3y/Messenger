@@ -37,7 +37,7 @@ class LoginFragment : Fragment() {
 
     @Suppress("DEPRECATION")
     @SuppressLint("StaticFieldLeak")
-    private inner class PerformLogin(val tempUser: User) : AsyncTask<String, String, String>() {
+    private inner class PerformLogin(var tempUser: User) : AsyncTask<String, String, String>() {
         lateinit var dialog: ProgressDialog
 
         override fun onPreExecute() {
@@ -66,7 +66,7 @@ class LoginFragment : Fragment() {
                         val res = response.body()!!
                         Toast.makeText(this@LoginFragment.context, res.message, Toast.LENGTH_LONG).show()
                         if (res.isLogged) {
-                            MainActivity.runUserContent(tempUser, res.token)
+                            MainActivity.runUserContent(tempUser, res.token, res.email)
                         }
 
                     } catch (ex: IOException) {

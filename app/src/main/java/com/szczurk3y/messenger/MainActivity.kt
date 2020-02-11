@@ -27,9 +27,10 @@ class MainActivity : AppCompatActivity() {
         lateinit var context: Context
         lateinit var userContentActivity: Intent
 
-        fun runUserContent(loggedUser: User, token: String) {
-            UserContentActivity.user = loggedUser
+        fun runUserContent(loggedUser: User, token: String, email: String) {
+            val user = RegisterUser(username = loggedUser.username, email = email, password = loggedUser.password)
             UserContentActivity.token = token
+            UserContentActivity.user = user
             userContentActivity = Intent(context, UserContentActivity::class.java)
             context.startActivity(userContentActivity)
         }

@@ -55,7 +55,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/changeUsername"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/enterUsername"
+            android:id="@+id/enterNewUsername"
             android:layout_marginEnd="100dp"
             android:layout_marginStart="25dp"/>
         <TextView
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:text="Change password:"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:layout_constraintTop_toBottomOf="@id/enterUsername"
+            app:layout_constraintTop_toBottomOf="@id/enterNewUsername"
             android:layout_margin="25dp"
             app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/changePassword"/>

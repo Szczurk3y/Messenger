@@ -46,7 +46,7 @@ class RegisterFragment : Fragment() {
         submit.setOnClickListener {
             if (switch.isChecked) {
                 user = RegisterUser(username.text.toString(), email.text.toString(), password.text.toString())
-                AsyncTaskHandleJSON().execute()
+                Registration().execute()
             } else {
                 Toast.makeText(registerView.context, "Accept our terms bitch", Toast.LENGTH_LONG).show()
             }
@@ -71,7 +71,7 @@ class RegisterFragment : Fragment() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class AsyncTaskHandleJSON : AsyncTask<String, String, String>() {
+    private inner class Registration : AsyncTask<String, String, String>() {
         lateinit var pDialog: ProgressDialog
 
         override fun onPreExecute() {
@@ -119,7 +119,7 @@ class RegisterFragment : Fragment() {
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            if (pDialog.isShowing()) {
+            if (pDialog.isShowing) {
                 pDialog.dismiss()
             }
         }
