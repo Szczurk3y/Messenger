@@ -11,10 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.szczurk3y.messenger.R
-import com.szczurk3y.messenger.RegisterUser
-import com.szczurk3y.messenger.RegistrationServerResponse
-import com.szczurk3y.messenger.ServiceBuilder
+import com.szczurk3y.messenger.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,7 +19,7 @@ import retrofit2.Response
 import java.io.IOException
 
 class RegisterFragment : Fragment() {
-    lateinit var user: RegisterUser
+    lateinit var user: User
     lateinit var registerView: View
     lateinit var username: EditText
     lateinit var email: EditText
@@ -45,7 +42,7 @@ class RegisterFragment : Fragment() {
         val submit: Button = registerView.findViewById(R.id.registerButton)
         submit.setOnClickListener {
             if (switch.isChecked) {
-                user = RegisterUser(username.text.toString(), email.text.toString(), password.text.toString())
+                user = User(username.text.toString(), email.text.toString(), password.text.toString())
                 Registration().execute()
             } else {
                 Toast.makeText(registerView.context, "Accept our terms bitch", Toast.LENGTH_LONG).show()

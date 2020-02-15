@@ -1,10 +1,6 @@
 package com.szczurk3y.messenger
 
-import Activities.UserContentActivity
-import Fragments.LoginFragment
-import android.graphics.Bitmap
-import com.google.gson.Gson
-import com.google.gson.JsonObject
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -14,11 +10,13 @@ import retrofit2.http.*
 interface MessengerService {
     @Headers("Content-Type: application/json")
     @POST("register")
-    fun register(@Body user: RegisterUser): Call<RegistrationServerResponse>
+    fun register(@Body user: User): Call<RegistrationServerResponse>
 
     @Headers("Content-Type: application/json")
     @POST("login")
-    fun login(@Body user: User): Call<LoginServerResponse>
+    fun login(
+        @Body loginUser: LoginUser
+    ): Call<LoginServerResponse>
 
     @Headers("Content-Type: application/json")
     @POST("invitations")
@@ -52,13 +50,14 @@ interface MessengerService {
     @POST("friends/delete")
     fun deleteFriend(@Header("auth-token") token: String, @Body friendsRelation: FriendsRelation): Call<ResponseBody>
 
-
-    @Headers("Content-Type: application/json")
-    @PATCH("update")
+    @Multipart
+    @POST("update")
     fun updateProfile(
-        @Header("auth-token") token: String,
-        @Body updatedUser: UpdatedUser
-//        @Part(value = "userImage", encoding = "8-bit") image: Bitmap
-    ): Call<UpdatedUser>
+        @Header ("auth-token") token: String,
+        @Part image: MultipartBody.Part?,
+        @Part username: MultipartBody.Part?,
+        @Part password: MultipartBody.Part?,
+        @Part email: MultipartBody.Part
+    ): Call<UpdatedUserServerResponse>
 
 }

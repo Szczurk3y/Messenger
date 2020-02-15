@@ -21,24 +21,37 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@mipmap/profile_image" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/usernameDisplay"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/imageView"
+            android:textColor="@color/colorAccent"
+            android:textAlignment="center"
+            android:text=""
+            android:textAllCaps="true"
+            android:layout_margin="25dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
         <Button
             android:id="@+id/uploadInternalImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="internal image"
+            android:text="change image"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/uploadExternalImage"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintEnd_toStartOf="@id/setDefaultImage"
+            app:layout_constraintTop_toBottomOf="@+id/usernameDisplay" />
         <Button
-            android:id="@+id/uploadExternalImage"
+            android:id="@+id/setDefaultImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="external image"
+            android:text="default image"
             app:layout_constraintStart_toEndOf="@id/uploadInternalImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/usernameDisplay" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,8 +69,8 @@
             app:layout_constraintTop_toBottomOf="@id/changeUsername"
             app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/enterNewUsername"
-            android:layout_marginEnd="100dp"
-            android:layout_marginStart="25dp"/>
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,8 +88,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/changePassword"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="100dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
             android:id="@+id/enterNewPassword"
             tools:ignore="HardcodedText" />
         <EditText
@@ -87,8 +100,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/enterNewPassword"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="100dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
             android:layout_marginTop="10dp"
             android:id="@+id/repeatNewPassword"/>
         <Button

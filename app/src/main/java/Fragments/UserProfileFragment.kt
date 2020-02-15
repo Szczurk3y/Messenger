@@ -1,13 +1,16 @@
 package Fragments
 
 import Activities.UserContentActivity
+import Dialogs.AlertDialog
+import Dialogs.BasicConfirmDialog
 import Dialogs.ConfirmPasswordDialog
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -15,19 +18,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.core.app.ActivityCompat
 
 import android.provider.MediaStore
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import com.szczurk3y.messenger.*
-import kotlinx.android.synthetic.main.fragment_user__profile.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 
 class UserProfileFragment : Fragment() {
@@ -37,20 +41,15 @@ class UserProfileFragment : Fragment() {
         const val IMAGE_PICK_CODE: Int = 997 // UwU
     }
 
-    private lateinit var uri: Uri
-    private lateinit var bitmapImage: Bitmap
-    lateinit var newUsername: EditText
-    lateinit var newPassword: EditText
+    private var uri: Uri? = null
+    private var inputStream: InputStream? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user__profile, container, false)
-
-        newUsername = view.findViewById(R.id.enterNewUsername) as EditText
-        newPassword = view.findViewById(R.id.enterNewPassword) as EditText
-
+        view.findViewById<TextView>(R.id.usernameDisplay).text = UserContentActivity.user.username
         if (ActivityCompat.checkSelfPermission(activity!!.application, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
@@ -58,102 +57,176 @@ class UserProfileFragment : Fragment() {
             )
         }
 
-        val uploadExternalImageButton = view.findViewById(R.id.uploadExternalImage) as Button
-        uploadExternalImageButton.setOnClickListener {
-            pickImageFromGallery(null)
-        }
-
         val uploadInternalImageButton = view.findViewById(R.id.uploadInternalImage) as Button
         uploadInternalImageButton.setOnClickListener {
-            pickImageFromGallery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            try {
+                startActivityForResult(intent, IMAGE_PICK_CODE)
+            } catch (err: ActivityNotFoundException) {
+                err.printStackTrace()
+            }
+        }
+
+        val setDefaultImage = view.findViewById(R.id.setDefaultImage) as Button
+        setDefaultImage.setOnClickListener {
+            val dialog = BasicConfirmDialog("Are you sure?")
+            dialog.show(fragmentManager, "Confirmation")
+            dialog.onConfirmResult = { _, newValue ->
+                if (newValue == "Confirm") {
+                    val imageView = view?.findViewById<ImageView>(R.id.imageView)
+                    imageView?.setImageResource(R.mipmap.profile_image)
+                    inputStream = null
+                }
+            }
         }
 
         val submitButton = view.findViewById(R.id.submitButton) as Button
         submitButton.setOnClickListener {
-            if (newUsername.text.toString() != "" || newPassword.text.toString() != "") {
-                val confirmPasswordDialog = ConfirmPasswordDialog()
-                confirmPasswordDialog.show(fragmentManager, "confirmation")
-                confirmPasswordDialog.onPasswordResult = { oldValue, newValue ->
-                    if(oldValue == newValue) {
-                        Toast.makeText(context, "Confirmed!", Toast.LENGTH_SHORT).show()
-                        Update(username = newUsername.text.toString(), password = newPassword.text.toString(), image = bitmapImage).execute()
-                    } else {
-                        Toast.makeText(context, "Wrong Password!", Toast.LENGTH_SHORT).show()
+            val usernameEditText = view.findViewById<EditText>(R.id.enterNewUsername)
+            val enterPasswordEditText = view.findViewById<EditText>(R.id.enterNewPassword)
+            val repeatPasswordEditText = view.findViewById<EditText>(R.id.repeatNewPassword)
+
+            var username = usernameEditText.text.toString()
+            var password = repeatPasswordEditText.text.toString()
+
+            if (enterPasswordEditText.text.toString() != repeatPasswordEditText.text.toString()) {
+                enterPasswordEditText.error = "The entered passwords do not match"
+                repeatPasswordEditText.error = "The entered passwords do not match"
+            } else {
+                if (username.isEmpty() && password.isEmpty() && inputStream == null) {
+                    val dialog = AlertDialog("Nothing to update")
+                    dialog.show(fragmentManager, "Unlucky :(")
+                } else {
+                    val confirmPasswordDialog = ConfirmPasswordDialog()
+                    confirmPasswordDialog.show(fragmentManager, "Confirm password")
+                    confirmPasswordDialog.onPasswordResult = { oldValue, newValue ->
+                        if (oldValue != newValue) {
+                            Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
+                        } else if (oldValue == newValue) {
+                            if (username.isEmpty()) username = UserContentActivity.user.username
+                            if (password.isEmpty()) password = UserContentActivity.user.password
+                            UpdateProfile(
+                                imageBytes = getBytes(inputStream),
+                                tempUsername = username,
+                                tempPassword = password,
+                                tempEmail = UserContentActivity.user.email
+                            ).execute()
+                        }
                     }
                 }
-
-            } else {
-                newUsername.error = "Username must contain at least 3 characters..."
-                Toast.makeText(context, "Nothing to update...", Toast.LENGTH_SHORT).show()
             }
         }
         return view
     }
 
-    private fun pickImageFromGallery(contentUri: Uri?) {
-        val intent = Intent(Intent.ACTION_PICK, contentUri)
-        startActivityForResult(intent, IMAGE_PICK_CODE)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            uri = data?.data!!
-            bitmapImage = MediaStore.Images.Media.getBitmap(activity?.application?.contentResolver, uri)
-            imageView.setImageBitmap(bitmapImage)
+        if (requestCode == IMAGE_PICK_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    assert(data != null)
+                    uri = data?.data!!
+                    inputStream = context?.contentResolver?.openInputStream(uri!!)
+                    val bitmapImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, uri)
+                    val imageView = view?.findViewById<ImageView>(R.id.imageView)
+                    imageView?.setImageBitmap(bitmapImage)
+                } catch (err: IOException) {
+                    err.printStackTrace()
+                }
+            }
         }
     }
 
-    inner class Update(
-        val username: String = UserContentActivity.user.username,
-        val password: String = UserContentActivity.user.password,
-        val email: String = UserContentActivity.user.email,
-        val image: Bitmap) : AsyncTask<String, String, String>() {
+    fun getBytes(tempInputStream: InputStream?) : ByteArray? {
+        tempInputStream?.let {
+            val byteBuffer = ByteArrayOutputStream()
+            val buff = ByteArray(1024)
+            var len = 0
+            while (len != 0) {
+                len = tempInputStream.read(buff)
+                byteBuffer.write(buff, 0, len)
+            }
+            return byteBuffer.toByteArray()
+        }
+        return null
+    }
 
-        lateinit var pDialog: ProgressDialog
+
+    @Suppress("DEPRECATION")
+    @SuppressLint("StaticFieldLeak")
+    inner class UpdateProfile(
+        val imageBytes: ByteArray?,
+        val tempUsername: String?,
+        val tempPassword: String?,
+        val tempEmail: String
+    ) : AsyncTask<String, String, String>() {
+
+        lateinit var dialog: ProgressDialog
 
         override fun onPreExecute() {
             super.onPreExecute()
-            pDialog = ProgressDialog(this@UserProfileFragment.context)
-            pDialog.setMessage("Registering")
-            pDialog.setCancelable(true)
-            pDialog.show()
+            dialog = ProgressDialog(context)
+            dialog.setTitle("Updating...")
+            dialog.setCancelable(false)
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.max = 100
+            dialog.show()
         }
 
         override fun doInBackground(vararg p0: String?): String {
             Thread.sleep(1000)
-            val updatedUser = UpdatedUser(username = username, email = email, password = password, image = image)
+
+            val requestFile: RequestBody? = RequestBody.create(MediaType.parse("image/jpeg"), imageBytes!!)
+
+            val newImage: MultipartBody.Part? = MultipartBody.Part.createFormData("image", "${tempUsername}.jpg", requestFile!!)
+            val newUsername: MultipartBody.Part? = MultipartBody.Part.createFormData("username", tempUsername!!)
+            val newPassword: MultipartBody.Part? = MultipartBody.Part.createFormData("password", tempPassword!!)
+            val email: MultipartBody.Part = MultipartBody.Part.createFormData("email", tempEmail)
+
             val call = ServiceBuilder().getInstance().getService().updateProfile(
                 UserContentActivity.token,
-                updatedUser
+                newImage,
+                newUsername,
+                newPassword,
+                email
             )
 
-            call.enqueue(object : Callback<UpdatedUser> {
-                override fun onFailure(call: Call<UpdatedUser>, t: Throwable) {
+            call.enqueue(object : Callback<UpdatedUserServerResponse> {
+                override fun onFailure(call: Call<UpdatedUserServerResponse>, t: Throwable) {
                     Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onResponse(
-                    call: Call<UpdatedUser>,
-                    response: Response<UpdatedUser>
+                    call: Call<UpdatedUserServerResponse>,
+                    response: Response<UpdatedUserServerResponse>
                 ) {
-                    val res = response.body()!!
-                    Toast.makeText(context, res.message, Toast.LENGTH_SHORT).show()
-                    val newUser = RegisterUser(username = res.username, email = UserContentActivity.user.email, password = res.password)
-                    UserContentActivity.user = newUser
+                    if (response.isSuccessful) {
+                        val res = response.body()
+                        res?.let {
+                            if (res.isUpdated) {
+                                val updatedUser = User(tempUsername, tempEmail, tempPassword)
+                                UserContentActivity.user = updatedUser
+                                view?.findViewById<TextView>(R.id.usernameDisplay)?.setText(tempUsername)
+                                view?.findViewById<EditText>(R.id.enterNewUsername)?.setText("")
+                                view?.findViewById<EditText>(R.id.enterNewPassword)?.setText("")
+                                view?.findViewById<EditText>(R.id.repeatNewPassword)?.setText("")
+                            }
+                            Toast.makeText(context, res.message, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(context, "Some server-side error occurred", Toast.LENGTH_SHORT).show()
+                    }
                 }
-
             })
 
-            return "done"
+            return ""
         }
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            if (pDialog.isShowing) {
-                pDialog.dismiss()
+            if (dialog.isShowing) {
+                dialog.dismiss()
             }
         }
-
     }
-
 }

@@ -7,10 +7,12 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.szczurk3y.messenger.*
@@ -26,10 +28,13 @@ class LoginFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_login, container, false)
         val submit: Button = view.findViewById(R.id.loginButton)
 
+        val usernameLogin = view.findViewById<EditText>(R.id.username_login)
+        val passwordLogin = view.findViewById<EditText>(R.id.password_login)
+
         submit.setOnClickListener {
-            val username = this.username_editText.text.toString()
-            val password = this.password_editText.text.toString()
-            PerformLogin(User(username, password)).execute()
+            val username = usernameLogin.text.toString()
+            val password = passwordLogin.text.toString()
+            PerformLogin(username, password).execute()
         }
 
         return view
@@ -37,7 +42,7 @@ class LoginFragment : Fragment() {
 
     @Suppress("DEPRECATION")
     @SuppressLint("StaticFieldLeak")
-    private inner class PerformLogin(var tempUser: User) : AsyncTask<String, String, String>() {
+    private inner class PerformLogin(val username: String, val password: String) : AsyncTask<String, String, String>() {
         lateinit var dialog: ProgressDialog
 
         override fun onPreExecute() {
@@ -47,11 +52,12 @@ class LoginFragment : Fragment() {
             dialog.setCancelable(false)
             dialog.show()
         }
+
         override fun doInBackground(vararg p0: String?): String {
             Thread.sleep(1000)
             val call: Call<LoginServerResponse> = ServiceBuilder().getInstance()
                 .getService()
-                .login(tempUser)
+                .login(LoginUser(username, password))
 
             call.enqueue(object : Callback<LoginServerResponse> {
                 override fun onFailure(call: Call<LoginServerResponse>, t: Throwable) {
@@ -63,10 +69,12 @@ class LoginFragment : Fragment() {
                     response: Response<LoginServerResponse>
                 ) {
                     try {
-                        val res = response.body()!!
-                        Toast.makeText(this@LoginFragment.context, res.message, Toast.LENGTH_LONG).show()
-                        if (res.isLogged) {
-                            MainActivity.runUserContent(tempUser, res.token, res.email)
+                        if (response.isSuccessful) {
+                            val res = response.body()!!
+                            Toast.makeText(this@LoginFragment.context, res.message, Toast.LENGTH_LONG).show()
+                            if (res.isLogged) {
+                                MainActivity.runUserContent(username, password, res.email, res.token)
+                            }
                         }
 
                     } catch (ex: IOException) {
@@ -80,11 +88,9 @@ class LoginFragment : Fragment() {
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            if (dialog.isShowing()) {
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
         }
     }
-
-
 }
