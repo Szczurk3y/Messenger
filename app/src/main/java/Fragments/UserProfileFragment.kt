@@ -141,10 +141,10 @@ class UserProfileFragment : Fragment() {
         tempInputStream?.let {
             val byteBuffer = ByteArrayOutputStream()
             val buff = ByteArray(1024)
-            var len = 0
-            while (len != 0) {
-                len = tempInputStream.read(buff)
+            var len = tempInputStream.read(buff)
+            while (len != -1) {
                 byteBuffer.write(buff, 0, len)
+                len = tempInputStream.read(buff)
             }
             return byteBuffer.toByteArray()
         }
