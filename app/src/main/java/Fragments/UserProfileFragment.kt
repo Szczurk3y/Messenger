@@ -11,6 +11,7 @@ import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -39,6 +40,8 @@ class UserProfileFragment : Fragment() {
     companion object {
         const val PERMISSION_CODE_READ: Int = 999
         const val IMAGE_PICK_CODE: Int = 997 // UwU
+        @SuppressLint("StaticFieldLeak")
+        var bitmapImage: Bitmap? = null
     }
 
     private var uri: Uri? = null
@@ -56,6 +59,12 @@ class UserProfileFragment : Fragment() {
                 PERMISSION_CODE_READ
             )
         }
+
+        if (bitmapImage != null) {
+            val imageView = view?.findViewById<ImageView>(R.id.imageView)!!
+            imageView.setImageBitmap(bitmapImage)
+        }
+
 
         val uploadInternalImageButton = view.findViewById(R.id.uploadInternalImage) as Button
         uploadInternalImageButton.setOnClickListener {
@@ -127,9 +136,9 @@ class UserProfileFragment : Fragment() {
                     assert(data != null)
                     uri = data?.data!!
                     inputStream = context?.contentResolver?.openInputStream(uri!!)
-                    val bitmapImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, uri)
-                    val imageView = view?.findViewById<ImageView>(R.id.imageView)
-                    imageView?.setImageBitmap(bitmapImage)
+                    bitmapImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, uri)
+                    val imageView = view?.findViewById<ImageView>(R.id.imageView)!!
+                    imageView.setImageBitmap(bitmapImage)
                 } catch (err: IOException) {
                     err.printStackTrace()
                 }

@@ -166,7 +166,7 @@ class UserFriendsFragment : Fragment() {
 
             requestCall.enqueue(object : Callback<MutableList<FriendsRelation>> {
                 override fun onFailure(call: Call<MutableList<FriendsRelation>>, t: Throwable) {
-                    Toast.makeText(this@UserFriendsFragment.context, t.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onResponse(

@@ -7,7 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import Activities.UserContentActivity
 import ViewPagers.ViewPageAdapter
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,7 +1,9 @@
 package com.szczurk3y.messenger
 
-import android.graphics.Bitmap
-import retrofit2.http.Part
+import java.io.ByteArrayOutputStream
+import java.nio.Buffer
+import java.nio.ByteBuffer
+import java.sql.Blob
 
 data class User(
     val username: String,
@@ -43,4 +45,8 @@ data class Invitation(
     val sender: String = "",
     val recipient: String = "",
     val __v: String = ""
+)
+
+data class GetAvatarsServerResponse @ExperimentalUnsignedTypes constructor(
+    val image: UIntArray
 )

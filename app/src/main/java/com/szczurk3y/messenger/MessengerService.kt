@@ -2,6 +2,7 @@ package com.szczurk3y.messenger
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.Response
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -51,7 +52,7 @@ interface MessengerService {
     fun deleteFriend(@Header("auth-token") token: String, @Body friendsRelation: FriendsRelation): Call<ResponseBody>
 
     @Multipart
-    @POST("update")
+    @POST("profile/update")
     fun updateProfile(
         @Header ("auth-token") token: String,
         @Part image: MultipartBody.Part?,
@@ -59,5 +60,12 @@ interface MessengerService {
         @Part password: MultipartBody.Part?,
         @Part email: MultipartBody.Part
     ): Call<UpdatedUserServerResponse>
+
+    @Headers("Content-Type: application/json")
+    @GET("profile/avatar")
+    fun getAvatar(
+        @Header("auth-token") token: String,
+        @Query("username") username: String
+    ): Call<ResponseBody>
 
 }

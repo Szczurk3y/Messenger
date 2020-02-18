@@ -37,7 +37,7 @@ class ConfirmPasswordDialog : DialogFragment() {
                     getDialog().cancel()
                 }
             builder.create()
-        } ?: throw IllegalStateException("A-ctivity cannot be null")
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 
     private fun fetchViews(view: View) {
