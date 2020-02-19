@@ -1,120 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_margin = "20dp"
+        android:background="#4CAF50"
+        android:id="@+id/submitButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="submit"/>
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context="Fragments.UserProfileFragment"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="216dp"
-            android:layout_height="208dp"
-            android:layout_marginTop="75dp"
-            android:src="@mipmap/profile_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/profile_image" />
+        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            tools:context="Fragments.UserProfileFragment"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageView"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="216dp"
+                android:layout_height="216dp"
+                android:layout_marginTop="75dp"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/colorAccent"
+                android:src="@drawable/profile_image" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:id="@+id/usernameDisplay"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/imageView"
-            android:textColor="@color/colorAccent"
-            android:textAlignment="center"
-            android:text=""
-            android:textAllCaps="true"
-            android:layout_margin="25dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:id="@+id/usernameDisplay"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/imageView"
+                android:textColor="@color/colorAccent"
+                android:textAlignment="center"
+                android:text="username"
+                android:textAllCaps="true"
+                android:layout_margin="25dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
-        <Button
-            android:id="@+id/uploadInternalImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="change image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/setDefaultImage"
-            app:layout_constraintTop_toBottomOf="@+id/usernameDisplay" />
-        <Button
-            android:id="@+id/setDefaultImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="default image"
-            app:layout_constraintStart_toEndOf="@id/uploadInternalImage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/usernameDisplay" />
+            <Button
+                android:id="@+id/uploadInternalImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="change image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/setDefaultImage"
+                app:layout_constraintTop_toBottomOf="@+id/usernameDisplay" />
+            <Button
+                android:id="@+id/setDefaultImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="default image"
+                app:layout_constraintStart_toEndOf="@id/uploadInternalImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/usernameDisplay" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change username:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:layout_constraintTop_toBottomOf="@id/uploadInternalImage"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/changeUsername"
-            android:layout_margin="25dp"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter new username"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/changeUsername"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/enterNewUsername"
-            android:layout_marginEnd="50dp"
-            android:layout_marginStart="50dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change password:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:layout_constraintTop_toBottomOf="@id/enterNewUsername"
-            android:layout_margin="25dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/changePassword"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint = "Enter new password"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/changePassword"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:id="@+id/enterNewPassword"
-            tools:ignore="HardcodedText" />
-        <EditText
-            android:layout_width="match_parent"
-            android:inputType="textPassword"
-            android:layout_height="wrap_content"
-            android:hint = "Repeat new password"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/enterNewPassword"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/repeatNewPassword"/>
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/repeatNewPassword"
-            android:background="#4CAF50"
-            android:id="@+id/submitButton"
-            android:text="submit"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change username:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                app:layout_constraintTop_toBottomOf="@id/uploadInternalImage"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:id="@+id/changeUsername"
+                android:layout_margin="25dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter new username"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/changeUsername"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:id="@+id/enterNewUsername"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="50dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change password:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                app:layout_constraintTop_toBottomOf="@id/enterNewUsername"
+                android:layout_margin="25dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:id="@+id/changePassword"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:hint = "Enter new password"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/changePassword"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:id="@+id/enterNewPassword"
+                tools:ignore="HardcodedText" />
+            <EditText
+                android:layout_width="match_parent"
+                android:inputType="textPassword"
+                android:layout_height="wrap_content"
+                android:hint = "Repeat new password"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/enterNewPassword"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="70dp"
+                android:id="@+id/repeatNewPassword"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</RelativeLayout>

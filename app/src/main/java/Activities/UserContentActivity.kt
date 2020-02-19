@@ -48,10 +48,13 @@ class UserContentActivity : AppCompatActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                val res = response.body()
-                res?.let {
-                    UserProfileFragment.bitmapImage = BitmapFactory.decodeStream(res.byteStream())
+                if (response.isSuccessful) {
+                    val res = response.body()
+                    res?.let {
+                        UserProfileFragment.bitmapImage = BitmapFactory.decodeStream(res.byteStream())
+                    }
                 }
+
             }
         })
     }

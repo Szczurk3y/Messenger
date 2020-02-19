@@ -12,8 +12,13 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -23,6 +28,8 @@ import androidx.core.app.ActivityCompat
 
 import android.provider.MediaStore
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.szczurk3y.messenger.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -30,6 +37,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -46,6 +54,7 @@ class UserProfileFragment : Fragment() {
 
     private var uri: Uri? = null
     private var inputStream: InputStream? = null
+    private var isImageChanged: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,72 +69,91 @@ class UserProfileFragment : Fragment() {
             )
         }
 
-        if (bitmapImage != null) {
+        Thread {
             val imageView = view?.findViewById<ImageView>(R.id.imageView)!!
-            imageView.setImageBitmap(bitmapImage)
-        }
-
-
-        val uploadInternalImageButton = view.findViewById(R.id.uploadInternalImage) as Button
-        uploadInternalImageButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            try {
-                startActivityForResult(intent, IMAGE_PICK_CODE)
-            } catch (err: ActivityNotFoundException) {
-                err.printStackTrace()
+            if (bitmapImage != null) {
+                imageView.setImageBitmap(bitmapImage)
+                val baos = ByteArrayOutputStream()
+                bitmapImage!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                inputStream = ByteArrayInputStream(baos.toByteArray())
+            } else {
+                imageView.setImageResource(R.drawable.profile_image)
             }
-        }
 
-        val setDefaultImage = view.findViewById(R.id.setDefaultImage) as Button
-        setDefaultImage.setOnClickListener {
-            val dialog = BasicConfirmDialog("Are you sure?")
-            dialog.show(fragmentManager, "Confirmation")
-            dialog.onConfirmResult = { _, newValue ->
-                if (newValue == "Confirm") {
-                    val imageView = view?.findViewById<ImageView>(R.id.imageView)
-                    imageView?.setImageResource(R.mipmap.profile_image)
-                    inputStream = null
+
+            val uploadInternalImageButton = view.findViewById(R.id.uploadInternalImage) as Button
+            uploadInternalImageButton.setOnClickListener {
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "image/*"
+                try {
+                    startActivityForResult(intent, IMAGE_PICK_CODE)
+                } catch (err: ActivityNotFoundException) {
+                    err.printStackTrace()
                 }
             }
-        }
 
-        val submitButton = view.findViewById(R.id.submitButton) as Button
-        submitButton.setOnClickListener {
-            val usernameEditText = view.findViewById<EditText>(R.id.enterNewUsername)
-            val enterPasswordEditText = view.findViewById<EditText>(R.id.enterNewPassword)
-            val repeatPasswordEditText = view.findViewById<EditText>(R.id.repeatNewPassword)
+            val setDefaultImage = view.findViewById(R.id.setDefaultImage) as Button
+            setDefaultImage.setOnClickListener {
+                val id =
+                    resources.getIdentifier("@drawable/profile_image", null, context?.packageName)
+                val constantState =
+                    context?.resources?.getDrawable(id, context?.theme)?.constantState
 
-            var username = usernameEditText.text.toString()
-            var password = repeatPasswordEditText.text.toString()
-
-            if (enterPasswordEditText.text.toString() != repeatPasswordEditText.text.toString()) {
-                enterPasswordEditText.error = "The entered passwords do not match"
-                repeatPasswordEditText.error = "The entered passwords do not match"
-            } else {
-                if (username.isEmpty() && password.isEmpty() && inputStream == null) {
-                    val dialog = AlertDialog("Nothing to update")
-                    dialog.show(fragmentManager, "Unlucky :(")
-                } else {
-                    val confirmPasswordDialog = ConfirmPasswordDialog()
-                    confirmPasswordDialog.show(fragmentManager, "Confirm password")
-                    confirmPasswordDialog.onPasswordResult = { oldValue, newValue ->
-                        if (oldValue != newValue) {
-                            Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
-                        } else if (oldValue == newValue) {
-                            if (username.isEmpty()) username = UserContentActivity.user.username
-                            if (password.isEmpty()) password = UserContentActivity.user.password
-                            UpdateProfile(
-                                imageBytes = getBytes(inputStream),
-                                tempUsername = username,
-                                tempPassword = password,
-                                tempEmail = UserContentActivity.user.email
-                            ).execute()
+                if (imageView.drawable.constantState != constantState) {
+                    val dialog = BasicConfirmDialog("Are you sure?")
+                    dialog.show(fragmentManager, "Confirmation")
+                    dialog.onConfirmResult = { _, newValue ->
+                        if (newValue == "Confirm") {
+                            imageView.setImageResource(R.drawable.profile_image)
+                            bitmapImage = null
+                            inputStream = null
+                            isImageChanged = true
                         }
                     }
                 }
             }
-        }
+
+            val submitButton = view.findViewById(R.id.submitButton) as Button
+            submitButton.setOnClickListener {
+                val usernameEditText = view.findViewById<EditText>(R.id.enterNewUsername)
+                val enterPasswordEditText = view.findViewById<EditText>(R.id.enterNewPassword)
+                val repeatPasswordEditText = view.findViewById<EditText>(R.id.repeatNewPassword)
+
+                var username = usernameEditText.text.toString()
+                var password = repeatPasswordEditText.text.toString()
+
+                if (enterPasswordEditText.text.toString() != repeatPasswordEditText.text.toString()) {
+                    enterPasswordEditText.error = "The entered passwords do not match"
+                    repeatPasswordEditText.error = "The entered passwords do not match"
+                } else if (usernameEditText.text.toString() == UserContentActivity.user.username) {
+                    usernameEditText.error = "The entered user is you."
+                } else {
+                    if (username.isEmpty() && password.isEmpty() && !isImageChanged) {
+                        val dialog = AlertDialog("Nothing to update")
+                        dialog.show(fragmentManager, "Unlucky :(")
+                    } else {
+                        val confirmPasswordDialog = ConfirmPasswordDialog()
+                        confirmPasswordDialog.show(fragmentManager, "Confirm password")
+                        confirmPasswordDialog.onPasswordResult = { oldValue, newValue ->
+                            if (oldValue != newValue) {
+                                Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else if (oldValue == newValue) {
+                                if (username.isEmpty()) username = UserContentActivity.user.username
+                                if (password.isEmpty()) password = UserContentActivity.user.password
+                                UpdateProfile(
+                                    imageBytes = getBytes(inputStream),
+                                    tempUsername = username,
+                                    tempPassword = password,
+                                    tempEmail = UserContentActivity.user.email
+                                ).execute()
+                                isImageChanged = false
+                            }
+                        }
+                    }
+                }
+            }
+        }.start()
         return view
     }
 
@@ -139,6 +167,7 @@ class UserProfileFragment : Fragment() {
                     bitmapImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, uri)
                     val imageView = view?.findViewById<ImageView>(R.id.imageView)!!
                     imageView.setImageBitmap(bitmapImage)
+                    isImageChanged = true
                 } catch (err: IOException) {
                     err.printStackTrace()
                 }
@@ -146,7 +175,7 @@ class UserProfileFragment : Fragment() {
         }
     }
 
-    fun getBytes(tempInputStream: InputStream?) : ByteArray? {
+    private fun getBytes(tempInputStream: InputStream?) : ByteArray? {
         tempInputStream?.let {
             val byteBuffer = ByteArrayOutputStream()
             val buff = ByteArray(1024)
@@ -185,9 +214,11 @@ class UserProfileFragment : Fragment() {
         override fun doInBackground(vararg p0: String?): String {
             Thread.sleep(1000)
 
-            val requestFile: RequestBody? = RequestBody.create(MediaType.parse("image/jpeg"), imageBytes!!)
-
-            val newImage: MultipartBody.Part? = MultipartBody.Part.createFormData("image", "${tempUsername}.jpg", requestFile!!)
+            var newImage: MultipartBody.Part? = null
+            imageBytes?.let {
+                val requestFile: RequestBody? = RequestBody.create(MediaType.parse("image/jpeg"), imageBytes)
+                newImage = MultipartBody.Part.createFormData("image", "${tempUsername}.jpg", requestFile!!)
+            }
             val newUsername: MultipartBody.Part? = MultipartBody.Part.createFormData("username", tempUsername!!)
             val newPassword: MultipartBody.Part? = MultipartBody.Part.createFormData("password", tempPassword!!)
             val email: MultipartBody.Part = MultipartBody.Part.createFormData("email", tempEmail)
