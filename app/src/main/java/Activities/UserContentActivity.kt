@@ -7,6 +7,7 @@ import ViewPagers.UserContentViewPageAdapter
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
+import androidx.viewpager.widget.ViewPager
 import com.szczurk3y.messenger.*
 import com.szczurk3y.messenger.MainActivity.Companion.context
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,6 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import okhttp3.ResponseBody
+import kotlin.properties.Delegates
 
 
 class UserContentActivity : AppCompatActivity() {
@@ -21,9 +23,9 @@ class UserContentActivity : AppCompatActivity() {
         var invitationsList = mutableListOf<Invitation>()
         var friendsList = mutableListOf<FriendsRelation>()
         var sentList = mutableListOf<Invitation>()
+        var chatList = mutableListOf<ChatItem>()
         lateinit var user: User
         lateinit var token: String
-        const val FILEPATH = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

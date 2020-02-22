@@ -1,14 +1,9 @@
 package com.szczurk3y.messenger
 
-import java.io.ByteArrayOutputStream
-import java.nio.Buffer
-import java.nio.ByteBuffer
-import java.sql.Blob
-
 data class User(
-    val username: String,
-    val email: String,
-    val password: String
+    val username: String = "",
+    val email: String = "",
+    val password: String = ""
 )
 
 data class UpdatedUserServerResponse(
@@ -16,6 +11,12 @@ data class UpdatedUserServerResponse(
     val isUpdated: Boolean = false
 )
 
+data class ChatItem(
+    val friend: String = "",
+    val date: String = "",
+    val lastMessage: String = "",
+    val image: String = "" // temp
+)
 
 data class FriendsRelation(
     val username: String = "",
@@ -23,8 +24,8 @@ data class FriendsRelation(
 )
 
 data class LoginUser(
-    val username: String,
-    val password: String
+    val username: String = "",
+    val password: String = ""
 )
 
 data class LoginServerResponse(
@@ -47,6 +48,3 @@ data class Invitation(
     val __v: String = ""
 )
 
-data class GetAvatarsServerResponse @ExperimentalUnsignedTypes constructor(
-    val image: UIntArray
-)

@@ -3,9 +3,10 @@ package ViewPagers
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import Fragments.User_ChatsFragment
+import Fragments.UserChatsFragment
 import Fragments.UserFriendsFragment
 import Fragments.UserProfileFragment
+import android.view.ViewGroup
 
 class UserContentViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
@@ -18,7 +19,7 @@ class UserContentViewPageAdapter(fragmentManager: FragmentManager) : FragmentPag
             }
 
             1 -> {
-                fragment = User_ChatsFragment()
+                fragment = UserChatsFragment()
             }
 
             2 -> {
@@ -32,6 +33,11 @@ class UserContentViewPageAdapter(fragmentManager: FragmentManager) : FragmentPag
     override fun getCount(): Int {
         return 3
     }
+
+    override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+        super.setPrimaryItem(container, position, `object`)
+    }
+
 
     override fun getPageTitle(position: Int): CharSequence? {
         var title: String? = null

@@ -1,26 +1,41 @@
 package Adapters
 
 import Activities.UserContentActivity
+import Fragments.UserChatsFragment
 import Fragments.UserFriendsFragment
+import android.annotation.SuppressLint
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.szczurk3y.messenger.ChatItem
 import com.szczurk3y.messenger.FriendsRelation
 import com.szczurk3y.messenger.R
 import com.szczurk3y.messenger.ServiceBuilder
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.util.*
 
 class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        lateinit var pager: View
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_item, parent, false)
+        pager = LayoutInflater.from(parent.context).inflate(R.layout.activity_main, parent, false)
+
         return ViewHolder(view)
     }
 
@@ -31,7 +46,27 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.friendName.text = friendsList[position].friend
         holder.createChat.setOnClickListener {
-            Toast.makeText(it.context, "Chat created!", Toast.LENGTH_SHORT).show()
+            val newChatItem = ChatItem(
+                holder.friendName.text.toString(),
+                "10.10.2020r",
+                "Last message",
+                ""
+            )
+            var isAlreadyExists = false
+            UserContentActivity.chatList.forEach { chatItem ->
+                if(chatItem.friend == holder.friendName.text.toString()) {
+                    isAlreadyExists = true
+                }
+            }
+            if (!isAlreadyExists) {
+                UserContentActivity.chatList.add(newChatItem)
+                UserChatsFragment.recyclerView.adapter = ChatsAdapter(UserContentActivity.chatList)
+                Handler().post {
+                    pager.viewPager.setCurrentItem(2, true)
+                }
+            } else {
+                Toast.makeText(it.context, "Chat already exists", Toast.LENGTH_SHORT).show()
+            }
         }
         holder.deleteFriend.setOnClickListener {
             val friendsRelation = FriendsRelation(UserContentActivity.user.username, friendsList[position].friend)
