@@ -7,15 +7,13 @@ import ViewPagers.UserContentViewPageAdapter
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
-import androidx.viewpager.widget.ViewPager
 import com.szczurk3y.messenger.*
-import com.szczurk3y.messenger.MainActivity.Companion.context
+import Activities.MainActivity.Companion.context
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import okhttp3.ResponseBody
-import kotlin.properties.Delegates
 
 
 class UserContentActivity : AppCompatActivity() {
@@ -34,7 +32,6 @@ class UserContentActivity : AppCompatActivity() {
         val pagerAdapter = UserContentViewPageAdapter(supportFragmentManager)
         this.viewPager.adapter = pagerAdapter
         this.tabLayout.setupWithViewPager(this.viewPager)
-
         val call = ServiceBuilder().getInstance().getService().getAvatar(
             token,
             user.username

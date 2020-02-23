@@ -19,7 +19,6 @@ import android.widget.Toast
 import com.szczurk3y.messenger.*
 import kotlinx.android.synthetic.main.fragment_user__friends.*
 import kotlinx.android.synthetic.main.fragment_user__friends.view.*
-import kotlinx.android.synthetic.main.sent_item.*
 import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Response

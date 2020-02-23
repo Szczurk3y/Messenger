@@ -19,7 +19,7 @@ import retrofit2.Response
 
 class SentAdapter(private val sentList: List<Invitation>) : RecyclerView.Adapter<SentAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.sent_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_sent, parent, false)
 
         return ViewHolder(view)
     }

@@ -1,9 +1,13 @@
 package Adapters
 
+import Activities.MainActivity
+import Activities.MessagingPlatformActivity
 import Activities.UserContentActivity
 import Fragments.UserChatsFragment
 import Fragments.UserFriendsFragment
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,10 +18,7 @@ import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.szczurk3y.messenger.ChatItem
-import com.szczurk3y.messenger.FriendsRelation
-import com.szczurk3y.messenger.R
-import com.szczurk3y.messenger.ServiceBuilder
+import com.szczurk3y.messenger.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import okhttp3.ResponseBody
@@ -33,9 +34,8 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
         lateinit var pager: View
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend, parent, false)
         pager = LayoutInflater.from(parent.context).inflate(R.layout.activity_main, parent, false)
-
         return ViewHolder(view)
     }
 
@@ -44,6 +44,7 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         holder.friendName.text = friendsList[position].friend
         holder.createChat.setOnClickListener {
             val newChatItem = ChatItem(
@@ -61,12 +62,10 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
             if (!isAlreadyExists) {
                 UserContentActivity.chatList.add(newChatItem)
                 UserChatsFragment.recyclerView.adapter = ChatsAdapter(UserContentActivity.chatList)
-                Handler().post {
-                    pager.viewPager.setCurrentItem(2, true)
-                }
-            } else {
-                Toast.makeText(it.context, "Chat already exists", Toast.LENGTH_SHORT).show()
             }
+            val messagingPlatformActivity = Intent(it.context, MessagingPlatformActivity::class.java)
+            messagingPlatformActivity.putExtra("friend", holder.friendName.text.toString())
+            it.context.startActivity(messagingPlatformActivity)
         }
         holder.deleteFriend.setOnClickListener {
             val friendsRelation = FriendsRelation(UserContentActivity.user.username, friendsList[position].friend)

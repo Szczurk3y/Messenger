@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.szczurk3y.messenger.ChatItem
 import com.szczurk3y.messenger.R
-import kotlinx.android.synthetic.main.chat_item.view.*
+import kotlinx.android.synthetic.main.item_chat.view.*
 
 class ChatsAdapter(private val chatItems: List<ChatItem>) : RecyclerView.Adapter<ChatsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_item, parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat, parent,false)
         return ViewHolder(view)
     }
 

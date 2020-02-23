@@ -21,7 +21,7 @@ import retrofit2.Response
 class InvitationsAdapter(private val invitationsList: List<Invitation>) : RecyclerView.Adapter<InvitationsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.invitation_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_invitation, parent, false)
         return ViewHolder(view)
     }
 
