@@ -18,6 +18,11 @@ data class ChatItem(
     val image: String = "" // temp
 )
 
+data class Message(
+    var nickname: String,
+    var message: String
+)
+
 data class FriendsRelation(
     val username: String = "",
     val friend: String = ""
