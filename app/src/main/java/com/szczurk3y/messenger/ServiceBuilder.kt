@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ServiceBuilder {
 //    val BASE_URL = "http://10.0.2.2:1234/api/user/" // ANDROID STUDIO
-    val BASE_URL = "http://192.168.1.27:1234/api/user/" // MY PHONE
+    val BASE_URL = "http://192.168.1.27:1235/api/user/" // MY PHONE
 
     var mInstance: ServiceBuilder? = null
     var retrofit: Retrofit

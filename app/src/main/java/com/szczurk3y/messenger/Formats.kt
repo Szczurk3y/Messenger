@@ -19,13 +19,14 @@ data class ChatItem(
 )
 
 data class Message(
-    var nickname: String,
-    var message: String
+    var nickname: String = "",
+    var message: String = ""
 )
 
 data class FriendsRelation(
     val username: String = "",
-    val friend: String = ""
+    val friend: String = "",
+    val chat_room: String = ""
 )
 
 data class LoginUser(

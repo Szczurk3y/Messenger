@@ -29,13 +29,14 @@ import java.time.LocalDateTime
 import java.util.*
 
 class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        lateinit var pager: View
-    }
+//    companion object {
+//        @SuppressLint("StaticFieldLeak")
+//        lateinit var pager: View
+//    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend, parent, false)
-        pager = LayoutInflater.from(parent.context).inflate(R.layout.activity_main, parent, false)
+//        pager = LayoutInflater.from(parent.context).inflate(R.layout.activity_main, parent, false)
         return ViewHolder(view)
     }
 
@@ -65,6 +66,7 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
             }
             val messagingPlatformActivity = Intent(it.context, MessagingPlatformActivity::class.java)
             messagingPlatformActivity.putExtra("friend", holder.friendName.text.toString())
+            messagingPlatformActivity.putExtra("chat_room", friendsList[position].chat_room)
             it.context.startActivity(messagingPlatformActivity)
         }
         holder.deleteFriend.setOnClickListener {

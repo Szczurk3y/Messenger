@@ -22,14 +22,13 @@ import org.json.JSONObject
 import java.net.URISyntaxException
 
 class MessagingPlatformActivity : AppCompatActivity() {
-    val socket: Socket = IO.socket("http://192.168.1.27:3000")
-    var nickname: String? = null
+    val socket: Socket = IO.socket("http://192.168.1.27:1235")
+    var friendNickName: String? = null
+    var chatRoom: String? = null
     var messageList: MutableList<Message> = mutableListOf()
-    var messageAdapter: MessagesAdapter? = null
     var recyclerView: RecyclerView? = null
     var messageText: EditText? = null
     var send: Button? = null
-    var messagingPlatformView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,25 +37,18 @@ class MessagingPlatformActivity : AppCompatActivity() {
         send = findViewById(R.id.sendMessage)
         recyclerView = findViewById(R.id.messagingRecyclerView)
 
-        nickname = intent.getStringExtra("friend")
-        this.friendNameMessagingPlatform.text = nickname
+        friendNickName = intent.getStringExtra("friend")
+        chatRoom = intent.getStringExtra("chat_room")
+
+        this.friendNameMessagingPlatform.text = friendNickName
 
         try {
             socket.connect()
-            socket.emit("join", nickname)
+            socket.emit("create", UserContentActivity.user.username, chatRoom)
             socket.on("userjoinedthechat") {
                 runOnUiThread {
                     it.run {
                         val data = it[0] as String
-                        Toast.makeText(applicationContext, data, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            socket.on("userdisconnect") {
-                runOnUiThread {
-                    it.run {
-                        val data = it[0] as String
-                        Toast.makeText(applicationContext, data, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -72,7 +64,6 @@ class MessagingPlatformActivity : AppCompatActivity() {
                         }
                         val recyclerView = this.findViewById(R.id.messagingRecyclerView) as RecyclerView
                         recyclerView.adapter = MessagesAdapter(messageList)
-                        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                     } catch (err: JSONException) {
                         err.printStackTrace()
                     }
@@ -84,7 +75,7 @@ class MessagingPlatformActivity : AppCompatActivity() {
 
         send?.setOnClickListener {
             if (messageText?.text.toString().isNotEmpty()) {
-                socket.emit("messagedetection", nickname, messageText?.text.toString())
+                socket.emit("messagedetection", UserContentActivity.user.username, messageText?.text.toString(), chatRoom)
                 messageText?.setText("")
             }
         }
@@ -92,6 +83,7 @@ class MessagingPlatformActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        socket.emit("save_conversation", UserContentActivity.user.username, "example", friendNickName)
         socket.disconnect()
     }
 }

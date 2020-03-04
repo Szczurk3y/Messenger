@@ -74,7 +74,7 @@ class UserFriendsFragment : Fragment() {
         friendsButton.setOnClickListener {
             friendsRelation = FriendsRelation(username = UserContentActivity.user.username)
             Thread(Runnable {
-                GetFriends(UserContentActivity.friendsList).execute()
+                GetFriends().execute()
             }).start()
         }
 
@@ -158,7 +158,7 @@ class UserFriendsFragment : Fragment() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class GetFriends(var list: MutableList<FriendsRelation>) : AsyncTask<String, String, String>() {
+    private inner class GetFriends : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg p0: String?): String {
             val requestCall: Call<MutableList<FriendsRelation>> =  ServiceBuilder().getInstance().getService().getFriends(UserContentActivity.token, friendsRelation)
@@ -173,7 +173,7 @@ class UserFriendsFragment : Fragment() {
                     response: Response<MutableList<FriendsRelation>>
                 ) {
                     try {
-                        list = response.body()!!
+                        val list = response.body()!!
                         friendsView.recyclerView.adapter = FriendsAdapter(list)
                         UserContentActivity.friendsList = list
                     } catch (ex: IOException) {
