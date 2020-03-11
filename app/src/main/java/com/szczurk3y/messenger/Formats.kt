@@ -1,5 +1,10 @@
 package com.szczurk3y.messenger
 
+import android.view.View
+import okhttp3.MultipartBody
+import retrofit2.http.Part
+import java.util.*
+
 data class User(
     val username: String = "",
     val email: String = "",
@@ -12,16 +17,18 @@ data class UpdatedUserServerResponse(
 )
 
 data class ChatItem(
-    val friend: String = "",
-    val date: String = "",
-    val lastMessage: String = "",
-    val image: String = "" // temp
+    val friend: String = ""
 )
 
 data class Message(
-    var nickname: String = "",
-    var message: String = ""
-)
+    val nickname: String = "",
+    val message: String = "",
+    val date: String = ""
+) {
+    override fun toString(): String {
+        return "{\"nickname\":\"${this.nickname}\", \"message\":\"${this.message}\", \"date\":\"${this.date}\"}"
+    }
+}
 
 data class FriendsRelation(
     val username: String = "",

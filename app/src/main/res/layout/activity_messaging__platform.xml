@@ -17,6 +17,7 @@
         android:id="@+id/messagingPlatformTopCard">
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="0dp"
+            android:id="@+id/messagingPlatformFriendImage"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@mipmap/ic_launcher"/>

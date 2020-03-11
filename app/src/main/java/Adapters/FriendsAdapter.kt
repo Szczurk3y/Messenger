@@ -48,22 +48,6 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
 
         holder.friendName.text = friendsList[position].friend
         holder.createChat.setOnClickListener {
-            val newChatItem = ChatItem(
-                holder.friendName.text.toString(),
-                "10.10.2020r",
-                "Last message",
-                ""
-            )
-            var isAlreadyExists = false
-            UserContentActivity.chatList.forEach { chatItem ->
-                if(chatItem.friend == holder.friendName.text.toString()) {
-                    isAlreadyExists = true
-                }
-            }
-            if (!isAlreadyExists) {
-                UserContentActivity.chatList.add(newChatItem)
-                UserChatsFragment.recyclerView.adapter = ChatsAdapter(UserContentActivity.chatList)
-            }
             val messagingPlatformActivity = Intent(it.context, MessagingPlatformActivity::class.java)
             messagingPlatformActivity.putExtra("friend", holder.friendName.text.toString())
             messagingPlatformActivity.putExtra("chat_room", friendsList[position].chat_room)

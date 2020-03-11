@@ -68,4 +68,10 @@ interface MessengerService {
         @Query("username") username: String
     ): Call<ResponseBody>
 
+    @Headers("Content-Type: application/json")
+    @GET("messages/chats")
+    fun getChats(
+        @Header("auth-token") token: String,
+        @Query("username") username: String
+    ): Call<MutableList<ChatItem>>
 }
