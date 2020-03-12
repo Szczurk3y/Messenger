@@ -89,10 +89,10 @@ class MessagingPlatformActivity : AppCompatActivity() {
                 runOnUiThread {
                     val data = it[0] as JSONObject
                     try {
-                        val nickname = data.getString("sender")
+                        val sender = data.getString("sender")
                         val message = data.getString("message")
                         val date = data.getString("date")
-                        messagesFrontendList.add(Message(nickname, message, date))
+                        messagesFrontendList.add(Message(message, sender, date))
                         val recyclerView = this.findViewById(R.id.messagingRecyclerView) as RecyclerView
                         recyclerView.adapter = MessagesAdapter(messagesFrontendList)
                     } catch (err: JSONException) {

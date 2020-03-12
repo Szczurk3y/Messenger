@@ -21,12 +21,12 @@ data class ChatItem(
 )
 
 data class Message(
-    val nickname: String = "",
     val message: String = "",
+    val sender: String = "",
     val date: String = ""
 ) {
     override fun toString(): String {
-        return "{\"nickname\":\"${this.nickname}\", \"message\":\"${this.message}\", \"date\":\"${this.date}\"}"
+        return "{\"nickname\":\"${this.sender}\", \"message\":\"${this.message}\", \"date\":\"${this.date}\"}"
     }
 }
 

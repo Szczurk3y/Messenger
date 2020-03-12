@@ -20,7 +20,7 @@ class MessagesAdapter(private val messagesList: List<Message>) : RecyclerView.Ad
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val message = messagesList[position]
-        holder.nickname.setText(message.nickname + ": ")
+        holder.nickname.setText(message.sender + ": ")
         holder.message.setText(message.message)
     }
 
