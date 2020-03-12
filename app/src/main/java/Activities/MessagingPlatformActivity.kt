@@ -50,7 +50,7 @@ class MessagingPlatformActivity : AppCompatActivity() {
         send = findViewById(R.id.sendMessage)
         recyclerView = findViewById(R.id.messagingRecyclerView)
 
-        friendNickName = intent.getStringExtra("friend")
+        friendNickName = intent.getStringExtra("friendname")
         chatRoom = intent.getStringExtra("chat_room")
 
         this.friendNameMessagingPlatform.text = friendNickName
@@ -73,7 +73,6 @@ class MessagingPlatformActivity : AppCompatActivity() {
                     }
                 }
             }
-
         })
 
         try {

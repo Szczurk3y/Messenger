@@ -49,7 +49,7 @@ class FriendsAdapter(private val friendsList: List<FriendsRelation>) : RecyclerV
         holder.friendName.text = friendsList[position].friend
         holder.createChat.setOnClickListener {
             val messagingPlatformActivity = Intent(it.context, MessagingPlatformActivity::class.java)
-            messagingPlatformActivity.putExtra("friend", holder.friendName.text.toString())
+            messagingPlatformActivity.putExtra("friendname", holder.friendName.text.toString())
             messagingPlatformActivity.putExtra("chat_room", friendsList[position].chat_room)
             it.context.startActivity(messagingPlatformActivity)
         }

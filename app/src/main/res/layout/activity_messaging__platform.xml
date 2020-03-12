@@ -7,27 +7,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="20dp">
     <LinearLayout
-        android:layout_width="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="75dp"
         android:layout_alignParentTop="true"
         android:paddingBottom="5dp"
         android:id="@+id/messagingPlatformTopCard">
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="0dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="75dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/friendNameMessagingPlatform"
+            android:layout_gravity="left"
             android:id="@+id/messagingPlatformFriendImage"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:src="@mipmap/ic_launcher"/>
         <TextView
+            android:layout_marginLeft="10dp"
             android:gravity="center"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:text="Friend Name"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textStyle="bold|italic"
+            android:textColor="#000000"
+            android:textSize="30dp"
             android:id="@+id/friendNameMessagingPlatform"/>
     </LinearLayout>
 
@@ -66,15 +72,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:background="#DBDBDB"
         android:paddingTop="5dp">
         <EditText
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/messageEditText"
-            android:hint="Send message"
-            />
+            android:hint="Send message" />
         <Button
             android:layout_width="50dp"
             android:layout_height="match_parent"

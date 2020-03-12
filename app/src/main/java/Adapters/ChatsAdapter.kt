@@ -1,7 +1,10 @@
 package Adapters
 
+import Activities.ChatHistoryActivity
 import Activities.UserContentActivity
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -41,21 +44,27 @@ class ChatsAdapter(private val chatItems: List<ChatItem>) : RecyclerView.Adapter
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
                     val res = response.body()!!
-                    val bitmap = BitmapFactory.decodeStream(res.byteStream())
-                    if (bitmap != null) {
-                        holder.image.setImageBitmap(bitmap)
+                    holder.bitmap = BitmapFactory.decodeStream(res.byteStream())
+                    if (holder.bitmap != null) {
+                        holder.image.setImageBitmap(holder.bitmap)
                     } else {
                         holder.image.setImageResource(R.drawable.profile_image)
                     }
                 }
             }
-
         })
+        holder.item.setOnClickListener {
+            val intent = Intent(it.context, ChatHistoryActivity::class.java)
+            intent.putExtra("friendname", chatItems[position].friend)
+            it.context.startActivity(intent)
+        }
     }
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val friend = itemView.friendUsernameTextView
         val image = itemView.chatImageView
+        val item = itemView.chatCardView
+        var bitmap: Bitmap? = null
     }
 }

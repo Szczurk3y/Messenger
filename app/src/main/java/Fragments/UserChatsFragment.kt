@@ -29,8 +29,6 @@ class UserChatsFragment : Fragment() {
 
     companion object {
         lateinit var recyclerView: RecyclerView
-        val username: String = UserContentActivity.user.username
-        val token: String = UserContentActivity.token
     }
 
     override fun onResume() {
@@ -44,12 +42,12 @@ class UserChatsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_user__chats, container, false)
 
         recyclerView = view.findViewById(R.id.chatRecyclerView) as RecyclerView
-        GetChats.execute()
+        GetChats(UserContentActivity.user.username, UserContentActivity.token).execute()
         return view
     }
 
 
-    object GetChats : AsyncTask<String, String, String>() {
+    inner class GetChats(val username: String, val token: String) : AsyncTask<String, String, String>() {
         override fun doInBackground(vararg p0: String?): String {
             val call = ServiceBuilder().getInstance().getService().getChats(
                 token,

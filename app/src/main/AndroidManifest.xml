@@ -17,12 +17,13 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="Activities.UserContentActivity" />
         <activity android:name="Activities.MessagingPlatformActivity" />
+        <activity android:name="Activities.ChatHistoryActivity" />
         <activity android:name="Activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
     </application>
 
